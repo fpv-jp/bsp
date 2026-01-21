@@ -1,0 +1,83 @@
+Labels:
+  "FrSky":
+  "iFlight":
+  "Flywoo":
+  "BeyondSky":
+  "Aocoda":
+    selected: true
+  "JHEMCU":
+  "DAKEFPV":
+Sort: 1
+Models:
+  model1.yml:
+    hash: "1f260000fa5a17b8"
+    name: "XSR-SIM"
+    mod1type: 5
+    labels: "FrSky"
+    bitmap: ""
+    lastopen: 1753570936
+  model2.yml:
+    hash: "50260000fa5ad6b9"
+    name: "Chimera7"
+    mod1id: 1
+    mod1type: 5
+    labels: "iFlight"
+    bitmap: ""
+    lastopen: 1753571422
+  model3.yml:
+    hash: "4b260000fa5ac9b3"
+    name: "ProTek35"
+    mod1id: 2
+    mod1type: 5
+    labels: "iFlight"
+    bitmap: ""
+    lastopen: 1753571414
+  model4.yml:
+    hash: "4e260000fa5acab3"
+    name: "HEXplorerLR4"
+    mod1id: 3
+    mod1type: 5
+    labels: "Flywoo"
+    bitmap: ""
+    lastopen: 1753570727
+  model5.yml:
+    hash: "49260000fa5acab3"
+    name: "LR10"
+    mod1id: 4
+    mod1type: 5
+    labels: "BeyondSky"
+    bitmap: ""
+    lastopen: 1753570741
+  model6.yml:
+    hash: "50260000fa5a49b3"
+    name: "Aocoda F405 V2"
+    mod1id: 5
+    mod1type: 5
+    labels: "Aocoda"
+    bitmap: ""
+    lastopen: 1753570758
+  model7.yml:
+    hash: "db2f0000075b91a5"
+    name: "Aocoda F405 V3"
+    mod1id: 6
+    mod1type: 5
+    labels: "Aocoda"
+    bitmap: ""
+    lastopen: 1753609783
+  model8.yml:
+    hash: "4d260000fa5aa7b3"
+    name: "JHEMCU H743"
+    mod1id: 7
+    mod1type: 5
+    labels: "JHEMCU"
+    bitmap: ""
+    lastopen: 1753570792
+  model9.yml:
+    hash: "4f260000fa5ab1b3"
+    name: "DAKEFPV H743"
+    mod1id: 8
+    mod1type: 5
+    labels: "DAKEFPV"
+    bitmap: ""
+    lastopen: 1753570810
+
