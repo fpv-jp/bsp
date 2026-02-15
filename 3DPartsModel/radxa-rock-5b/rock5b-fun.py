@@ -21,15 +21,11 @@ MAIN_THICKNESS = 1.5
 
 main = base.create_cube(
     scale=(MAIN_WIDTH, MAIN_HEIGHT, MAIN_THICKNESS),
-    location=(0, 0, 0),
-    name="main",
 )
 
 base.cut_cube(
     target=main,
     scale=(26, 26, MAIN_THICKNESS + 1),
-    location=(0, 0, 0),
-    name="cut_center",
 )
 
 prop_x1 = 10
@@ -66,50 +62,38 @@ for i, (x, y, a, b, n, m) in enumerate(holes):
         location=(x, y, 0),
         name=f"ring_inner_{i}",
     )
+#------------------
+MAIN_WIDTH = (51.7+55.8)/2
+MAIN_HEIGHT = (30.6+34.4)/2
 
-main.rotation_euler[2] = math.radians(45)
+main2 = base.create_cube(
+    scale=(MAIN_WIDTH+MAIN_THICKNESS*3, MAIN_HEIGHT+MAIN_THICKNESS*3, MAIN_THICKNESS),
+)
 
-M3 = 1.85
+base.cut_cube(
+    target=main2,
+    scale=(MAIN_WIDTH-MAIN_THICKNESS, MAIN_HEIGHT-MAIN_THICKNESS, MAIN_THICKNESS),
+)
 
-X_POS = 14
-Y_POS = 20
+M3 = 1.6
 
-holes2 = [
-    (X_POS, Y_POS),
-    (-X_POS, Y_POS),
-]
+P_X1 =  MAIN_WIDTH/2
+P_X2 =  -P_X1
+
+P_Y1 =  MAIN_HEIGHT/2
+P_Y2 =  -P_Y1
+
+holes2 = [(P_X1, P_Y1), (P_X1, P_Y2), (P_X2, P_Y1),(P_X2, P_Y2)]
 
 for i, (x, y) in enumerate(holes2):
-    base.add_cylinder(
-        target=main,
-        radius=M3 * 2,
-        depth=MAIN_THICKNESS * 2,
-        location=(x, y, MAIN_THICKNESS / 2),
-        name=f"ring2_outer_{i}",
-    )
-    base.cut_cylinder(
-        target=main,
-        radius=M3,
-        depth=MAIN_THICKNESS * 2 + 1,
-        location=(x, y, MAIN_THICKNESS / 2),
-        name=f"ring2_inner_{i}",
+    base.add_ring(
+        target=main2,
+        outer_radius=M3 * 2,
+        inner_radius=M3,
+        depth=MAIN_THICKNESS,
+        location=(x, y, 0),
     )
 
-base.add_cube(
-    target=main,
-    scale=(3, 12, MAIN_THICKNESS * 2),
-    location=(X_POS, 12, MAIN_THICKNESS / 2),
-    name="tab_right",
-)
-base.add_cube(
-    target=main,
-    scale=(3, 12, MAIN_THICKNESS * 2),
-    location=(-X_POS, 12, MAIN_THICKNESS / 2),
-    name="tab_left",
-)
-base.add_cube(
-    target=main,
-    scale=(23, 3.9, MAIN_THICKNESS * 2),
-    location=(0, 20, MAIN_THICKNESS / 2),
-    name="tab_top",
-)
+main2.location=(8.0, 2.0, 0)
+
+base.modifier_apply(obj=main2, target=main, operation="UNION")

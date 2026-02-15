@@ -26,6 +26,7 @@ MESON_BASE_OPTIONS=(
   -Dlibnice=enabled
   -Ddevtools=disabled
   -Dpython=disabled
+  -Drtsp_server=enabled
   # gstreamer core
   -Dgstreamer:tools=enabled
   -Dgstreamer:check=disabled
@@ -41,6 +42,7 @@ MESON_BASE_OPTIONS=(
   # gst-plugins-good
   -Dgst-plugins-good:v4l2=enabled
   -Dgst-plugins-good:rtp=enabled
+  -Dgst-plugins-good:rtsp=enabled
   -Dgst-plugins-good:rtpmanager=enabled
   -Dgst-plugins-good:udp=enabled
   -Dgst-plugins-good:audioparsers=enabled
@@ -52,6 +54,8 @@ MESON_BASE_OPTIONS=(
   -Dgst-plugins-bad:sctp=enabled
   -Dgst-plugins-bad:videoparsers=enabled
   -Dgst-plugins-bad:opus=enabled
+  # gst-rtsp-server
+  -Dgst-rtsp-server:rtspclientsink=enabled
   # libnice
   -Dlibnice:gstreamer=enabled
 )
