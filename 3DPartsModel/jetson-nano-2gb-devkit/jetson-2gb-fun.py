@@ -86,6 +86,6 @@ for i, (x, y) in enumerate(holes2):
         target=main,
         outer_radius=M3 * 2,
         inner_radius=M3,
-        depth=z,
-        location=(x, y, (z - MAIN_THICKNESS) / 2),
+        depth=MAIN_THICKNESS,
+        location=(x, y, 0),
     )
