@@ -19,28 +19,41 @@ CM4_DEPTH = 5.4
 
 CM4_THICKNESS = 1.5
 
-X_ALL = (CM4_WIDTH + CM4_THICKNESS * 2)/2
-Y_ALL = (CM4_HEIGHT + CM4_THICKNESS * 2)/2.75
-
 main = base.create_cube(
     scale=(59.2, 44.1, 6.9),
 )
 
 M = 1.25
+X_ALL = (CM4_WIDTH + CM4_THICKNESS * 2) / 2 + 2.5
+Y_ALL = (CM4_HEIGHT + CM4_THICKNESS * 2) / 2.75
+
+W = M + CM4_THICKNESS
+
+holes = [(X_ALL, Y_ALL), (X_ALL, -Y_ALL)]
+for i, (x, y) in enumerate(holes):
+    base.add_cube(
+        target=main,
+        scale=(W, W * 2, CM4_THICKNESS),
+        location=(x - W / 2, y, CM4_DEPTH / 2),
+    )
+
+holes = [(-X_ALL, Y_ALL), (-X_ALL, -Y_ALL)]
+for i, (x, y) in enumerate(holes):
+    base.add_cube(
+        target=main,
+        scale=(W, W * 2, CM4_THICKNESS),
+        location=(x + W / 2, y, CM4_DEPTH / 2),
+    )
+
 holes = [(X_ALL, Y_ALL), (-X_ALL, Y_ALL), (X_ALL, -Y_ALL), (-X_ALL, -Y_ALL)]
 for i, (x, y) in enumerate(holes):
     base.add_ring(
         target=main,
-        outer_radius=M + CM4_THICKNESS,
+        outer_radius=W,
         inner_radius=M,
-        depth=CM4_DEPTH+CM4_THICKNESS, 
-        location=(x, y, 0),
+        depth=CM4_THICKNESS,
+        location=(x, y, CM4_DEPTH / 2),
     )
-
-TRIM_SCALE = (M + CM4_THICKNESS, CM4_HEIGHT, CM4_DEPTH)
-TRIM_LOCATION = (CM4_WIDTH + CM4_THICKNESS * 3 + M)/2
-base.cut_cube(target=main, scale=TRIM_SCALE, location=(TRIM_LOCATION, 0, CM4_THICKNESS/2))
-base.cut_cube(target=main, scale=TRIM_SCALE, location=(-TRIM_LOCATION, 0, CM4_THICKNESS/2))
 
 base.cut_corners(
     target=main,
@@ -87,6 +100,8 @@ base.cut_cube(
 )
 
 # wifi
+
+# ----pin
 base.add_cube(
     target=main,
     scale=(35.1, 3.0, 1.2),
@@ -97,7 +112,6 @@ base.add_cube(
     scale=(35.1, 3.0, 1.2),
     location=(10.15, 1.0, 5.6),
 )
-
 base.add_cube(
     target=main,
     scale=(3.0, 32.4, 1.2),
@@ -108,18 +122,26 @@ base.add_cube(
     scale=(3.0, 32.4, 1.2),
     location=(21.15, 9.5, 5.6),
 )
-
+# ----cut
 base.cut_cube(
     target=main,
     scale=(32.1, 32.4, 10.0),
     location=(10.15, 11.0, 4.9),
 )
 
+# ----wifi-ptate
 base.add_cube(
     target=main,
     scale=(32.1, 32.4, 0.75),
     location=(10.15, 11.0, 6.525),
 )
+base.cut_cube(
+    target=main,
+    scale=(56.2, 41.1, 10.0),
+    location=(0, 42.6, 4.9),
+)
+
+# ----wifi-ptate-cut
 base.cut_cube(
     target=main,
     scale=(11.0, 32.4, 10.0),
@@ -129,12 +151,6 @@ base.cut_cube(
     target=main,
     scale=(29.5, 32.4, 10.0),
     location=(10.15, 17.5, 4.9),
-)
-
-base.cut_cube(
-    target=main,
-    scale=(56.2, 41.1, 10.0),
-    location=(0, 42.6, 4.9),
 )
 
 
