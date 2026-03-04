@@ -96,22 +96,22 @@ main.location = (0, -65, 0)
 
 base.add_cube(
     target=main,
-    scale=(52.5, MAIN_THICKNESS, 12.0),
-    location=(0, 0, 6.0 - MAIN_THICKNESS / 2),
+    scale=(52.5, MAIN_THICKNESS, 20.0),
+    location=(0, 0, 10.0 - MAIN_THICKNESS / 2),
 )
 
 base.cut_cylinder(
     target=main,
     radius=1.1,
     depth=MAIN_THICKNESS * 2,
-    location=(23.85, 0, 8.8),
+    location=(23.85, 0, 16.8),
     rotation=(math.pi / 2, 0, 0),
 )
 base.cut_cylinder(
     target=main,
     radius=1.1,
     depth=MAIN_THICKNESS * 2,
-    location=(-23.85, 0, 8.8),
+    location=(-23.85, 0, 16.8),
     rotation=(math.pi / 2, 0, 0),
 )
 
