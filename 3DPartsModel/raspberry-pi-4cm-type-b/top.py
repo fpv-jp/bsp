@@ -34,7 +34,7 @@ for i, (x, y) in enumerate(holes):
     base.add_cube(
         target=main,
         scale=(W, W * 2, CM4_THICKNESS),
-        location=(x - W / 2, y, CM4_DEPTH / 2),
+        location=(x - W / 2, y, -CM4_DEPTH / 2),
     )
 
 holes = [(-X_ALL, Y_ALL), (-X_ALL, -Y_ALL)]
@@ -42,7 +42,7 @@ for i, (x, y) in enumerate(holes):
     base.add_cube(
         target=main,
         scale=(W, W * 2, CM4_THICKNESS),
-        location=(x + W / 2, y, CM4_DEPTH / 2),
+        location=(x + W / 2, y, -CM4_DEPTH / 2),
     )
 
 holes = [(X_ALL, Y_ALL), (-X_ALL, Y_ALL), (X_ALL, -Y_ALL), (-X_ALL, -Y_ALL)]
@@ -52,7 +52,7 @@ for i, (x, y) in enumerate(holes):
         outer_radius=W,
         inner_radius=M,
         depth=CM4_THICKNESS,
-        location=(x, y, CM4_DEPTH / 2),
+        location=(x, y, -CM4_DEPTH / 2),
     )
 
 base.cut_corners(
