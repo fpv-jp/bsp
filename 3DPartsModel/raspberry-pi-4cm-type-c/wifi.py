@@ -35,7 +35,7 @@ base.cut_corners(
     thickness=CM4_THICKNESS,
 )
 
-## ----------------------------------------------------------------------------------------------------------------
+### ----------------------------------------------------------------------------------------------------------------
 
 M = 2.3
 X = (45.4 + M) / 2
@@ -43,56 +43,15 @@ Y = (30.5 + M) / 2
 
 base.cut_holes(
     target=main,
-    radius=1.25,
+    radius=1.4,
     depth=CM4_DEPTH + CM4_THICKNESS,
     positions=[(X, Y), (X, -Y), (-X, Y), (-X, -Y)],
 )
 
-## ----------------------------------------------------------------------------------------------------------------
-
-base.cut_cube(
-    target=main,
-    scale=(CM4_WIDTH - 12, CM4_HEIGHT - 12, CM4_DEPTH + CM4_THICKNESS),
-)
-
-## ----------------------------------------------------------------------------------------------------------------
-
-x1 = 22.25
-y1 = 15.0
-
-t = [(3.5, 0, 0), (0, 3.5, 0), (0, 0, 0)]
-triangle_positions = [
-    (-x1, y1, t, 270),
-    (x1, y1, t, 180),
-    (x1, -y1, t, 90),
-    (-x1, -y1, t, 0),
-]
-
-for i, (x, y, verts, rotation) in enumerate(triangle_positions):
-    base.add_triangle(
-        target=main,
-        verts=verts,
-        depth=CM4_DEPTH + CM4_THICKNESS,
-        location=(x, y, (-CM4_THICKNESS - CM4_DEPTH) / 2),
-        rotation=(0, 0, math.radians(rotation)),
-    )
-
-
-## ----------------------------------------------------------------------------------------------------------------
+### ----------------------------------------------------------------------------------------------------------------
 
 X = 32.3
 Y = 32.3
-
-base.add_cube(
-    target=main,
-    scale=(CM4_THICKNESS * 2, CM4_HEIGHT, CM4_DEPTH + CM4_THICKNESS),
-    location=(X / 2, 0, 0),
-)
-base.add_cube(
-    target=main,
-    scale=(CM4_THICKNESS * 2, CM4_HEIGHT, CM4_DEPTH + CM4_THICKNESS),
-    location=(-X / 2, 0, 0),
-)
 
 FULL = CM4_DEPTH + CM4_THICKNESS
 
@@ -110,98 +69,79 @@ base.cut_cube(
     location=(0, Y / 4 + CM4_THICKNESS, (Z - FULL) / 2),
 )
 
+### ----------------------------------------------------------------------------------------------------------------
 
-def Xxxx(XX):
+
+def Wire(POS):
     base.cut_cube(
         target=main,
         scale=(1.7, Y / 2, Z),
-        location=(XX, Y / 2, (Z - FULL) / 2),
+        location=(POS, Y / 2, (Z - FULL) / 2),
     )
 
 
 X = 0.75
-Xxxx(8.4 - X)
-Xxxx(6.0 - X)
-Xxxx(3.6 - X)
+Wire(8.4 - X)
+Wire(6.0 - X)
+Wire(3.6 - X)
 
-Xxxx(-8.4)
-Xxxx(-6.0)
+Wire(-8.4)
+Wire(-6.0)
 
-## ----------------------------------------------------------------------------------------------------------------
+### ----------------------------------------------------------------------------------------------------------------
 
-X = CM4_WIDTH + CM4_THICKNESS * 2
-Z = CM4_DEPTH + CM4_THICKNESS
-
-
-right = base.create_cube(
-    scale=(14.0, 7.0, 20.0),
-    location=(0, 3.5, 0),
-)
-
-base.cut_cylinder(
-    target=right,
-    radius=5.1,
-    depth=20.0,
-    location=(0, 0, 1.5),
-)
-
-base.add_ring(
-    target=right,
-    outer_radius=7.0,
-    inner_radius=5.1,
-    depth=7.0,
-    location=(0, 0, (20.0 - 7.0) / 2),
-)
-
-base.add_ring(
-    target=right,
-    outer_radius=7.0,
-    inner_radius=3.25,
-    depth=1.5,
-    location=(0, 0, (-20.0 + 1.5) / 2),
-)
+OUTER = 7.0
+INNER = 5.1
+DEPTH = 12.0
+DEPTH2 = 2.0
+DEPTH3 = 7.0
 
 
-## ----------------------------------------------------------------------------------------------------------------
+def create_antenna():
+    antenna = base.create_cube(scale=(OUTER * 2, OUTER, DEPTH), location=(0, OUTER / 2, 0))
+    base.add_ring(target=antenna, outer_radius=OUTER, inner_radius=INNER, depth=DEPTH)
+    base.add_ring(
+        target=antenna,
+        outer_radius=OUTER,
+        inner_radius=3.25,
+        depth=DEPTH2,
+        location=(0, 0, (DEPTH - DEPTH2) / 2),
+    )
+    base.cut_cube(
+        target=antenna,
+        scale=(OUTER * 2, OUTER, DEPTH3),
+        location=(0, -OUTER / 2, 0),
+    )
+    return antenna
 
-left = base.create_cube(
-    scale=(14.0, 7.0, 20.0),
-    location=(0, 3.5, 0),
-)
 
-base.cut_cylinder(
-    target=left,
-    radius=5.1,
-    depth=20.0,
-    location=(0, 0, 1.5),
-)
-
-base.add_ring(
-    target=left,
-    outer_radius=7.0,
-    inner_radius=5.1,
-    depth=7.0,
-    location=(0, 0, (20.0 - 7.0) / 2),
-)
-
-base.add_ring(
-    target=left,
-    outer_radius=7.0,
-    inner_radius=3.25,
-    depth=1.5,
-    location=(0, 0, (-20.0 + 1.5) / 2),
-)
-
-## ----------------------------------------------------------------------------------------------------------------
-
-right.location = (-(X / 2 + 7.0), 7.0, 5.25)
+right = create_antenna()
+right.location = (-35, 14.0, OUTER - (CM4_DEPTH + CM4_THICKNESS) / 2)
 right.rotation_euler[0] = -math.pi / 2
+right.rotation_euler[2] = math.pi
 
-left.location = (X / 2 + 7.0, 7.0, 5.25)
+left = create_antenna()
+left.location = (35, 14.0, DEPTH / 2 - (CM4_DEPTH + CM4_THICKNESS) / 2)
 left.rotation_euler[0] = -math.pi / 2
+left.rotation_euler[2] = math.pi
 
 base.modifier_apply(obj=right, target=main, operation="UNION")
 base.modifier_apply(obj=left, target=main, operation="UNION")
 
+### ----------------------------------------------------------------------------------------------------------------
 
-main.location = (X / 2, 0, 0)
+T = 10.0
+base.add_cube(
+    target=main,
+    scale=(CM4_WIDTH / 2, T, CM4_DEPTH + CM4_THICKNESS),
+    location=(0, -(CM4_HEIGHT + T) / 2, 0),
+)
+
+X = 8.0
+Y = -26.0
+base.cut_holes(
+    target=main,
+    radius=1.75,
+    depth=CM4_DEPTH + CM4_THICKNESS,
+    positions=[(X, Y), (-X, Y)],
+)
