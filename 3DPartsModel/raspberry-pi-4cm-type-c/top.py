@@ -147,7 +147,7 @@ base.cut_cube(
     ),
 )
 
-# usb-A2
+# usb-A-sub
 X = 14.6
 Y = 2.3
 base.cut_cube(
@@ -159,6 +159,18 @@ base.cut_cube(
         Z / 2 - 0.1,
     ),
 )
+X = 6.6
+Y = 2.8
+base.cut_cube(
+    target=main,
+    scale=(X, Y, Z),
+    location=(
+        (X - CM4_WIDTH) / 2 + 6.1,
+        (Y - CM4_HEIGHT) / 2 + 13.8,
+        Z / 2 - 0.1,
+    ),
+)
+
 
 # hdmi
 X = 11.5
