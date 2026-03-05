@@ -19,11 +19,13 @@ CM4_DEPTH = 2.0
 
 CM4_THICKNESS = 1.5
 
+FULL = CM4_DEPTH + CM4_THICKNESS
+
 main = base.create_cube(
     scale=(
         CM4_WIDTH + CM4_THICKNESS * 2,
         CM4_HEIGHT + CM4_THICKNESS * 2,
-        CM4_DEPTH + CM4_THICKNESS,
+        FULL,
     ),
 )
 
@@ -44,7 +46,7 @@ Y = (30.5 + M) / 2
 base.cut_holes(
     target=main,
     radius=1.4,
-    depth=CM4_DEPTH + CM4_THICKNESS,
+    depth=FULL,
     positions=[(X, Y), (X, -Y), (-X, Y), (-X, -Y)],
 )
 
@@ -53,7 +55,6 @@ base.cut_holes(
 X = 32.3
 Y = 32.3
 
-FULL = CM4_DEPTH + CM4_THICKNESS
 
 Z = 1.1
 base.cut_cube(
@@ -68,6 +69,12 @@ base.cut_cube(
     scale=(18.5, Y / 2, Z + 3),
     location=(0, Y / 4 + CM4_THICKNESS, (Z - FULL) / 2),
 )
+
+base.cut_cube(
+    target=main,
+    scale=(24.0, 24.0, Z + 3),
+)
+
 
 ### ----------------------------------------------------------------------------------------------------------------
 
@@ -92,7 +99,7 @@ Wire(-6.0)
 
 OUTER = 7.0
 INNER = 5.1
-DEPTH = 12.0
+DEPTH = 11.5
 DEPTH2 = 2.0
 DEPTH3 = 7.0
 
@@ -116,14 +123,14 @@ def create_antenna():
 
 
 right = create_antenna()
-right.location = (-35, 14.0, OUTER - (CM4_DEPTH + CM4_THICKNESS) / 2)
+right.location = (-22.75, 0.0, OUTER + FULL / 2)
 right.rotation_euler[0] = -math.pi / 2
-right.rotation_euler[2] = math.pi
+right.rotation_euler[2] = -math.pi / 2
 
 left = create_antenna()
-left.location = (35, 14.0, DEPTH / 2 - (CM4_DEPTH + CM4_THICKNESS) / 2)
+left.location = (22.75, 0.0, OUTER + FULL / 2)
 left.rotation_euler[0] = -math.pi / 2
-left.rotation_euler[2] = math.pi
+left.rotation_euler[2] = math.pi / 2
 
 base.modifier_apply(obj=right, target=main, operation="UNION")
 base.modifier_apply(obj=left, target=main, operation="UNION")
@@ -133,7 +140,7 @@ base.modifier_apply(obj=left, target=main, operation="UNION")
 T = 10.0
 base.add_cube(
     target=main,
-    scale=(CM4_WIDTH / 2, T, CM4_DEPTH + CM4_THICKNESS),
+    scale=(24.5, T, CM4_DEPTH + CM4_THICKNESS),
     location=(0, -(CM4_HEIGHT + T) / 2, 0),
 )
 
