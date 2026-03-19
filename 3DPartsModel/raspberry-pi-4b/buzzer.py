@@ -15,7 +15,7 @@ base.init()
 
 MAIN_WIDTH = 20.2
 MAIN_HEIGHT = 10.2
-MAIN_DEPTH = 3.5
+MAIN_DEPTH = 4.5
 MAIN_THICKNESS = 2.0
 
 main = base.create_cube(
@@ -26,6 +26,7 @@ main = base.create_cube(
 
 M = 1.5
 ARM = MAIN_WIDTH + M * 6
+
 
 def bar():
     b = base.create_cube(
@@ -45,6 +46,7 @@ def bar():
         )
     return b
 
+
 b = bar()
 base.modifier_apply(obj=b, target=main, operation="UNION")
 
@@ -52,17 +54,17 @@ base.modifier_apply(obj=b, target=main, operation="UNION")
 
 base.cut_cube(
     target=main,
-    scale=(MAIN_WIDTH, 5.7, MAIN_DEPTH),  
+    scale=(MAIN_WIDTH, 5.7, MAIN_DEPTH),
 )
 base.cut_cube(
     target=main,
-    scale=(24.2, 5.2, MAIN_THICKNESS),  
-    location=(0.0, 0.0, -MAIN_THICKNESS/2),
+    scale=(24.2, 5.2, MAIN_DEPTH - MAIN_THICKNESS),
+    location=(0.0, 0.0, -MAIN_THICKNESS / 2),
 )
 base.cut_cube(
     target=main,
     scale=(MAIN_WIDTH, MAIN_HEIGHT, MAIN_DEPTH),
-    location=(0.0, 0.0, -MAIN_THICKNESS/2),
+    location=(0.0, 0.0, -MAIN_THICKNESS / 2),
 )
 base.cut_cylinder(
     target=main,
@@ -71,3 +73,28 @@ base.cut_cylinder(
 )
 
 main.rotation_euler = (math.pi, 0.0, 0.0)
+
+
+# ------------------------
+M = 0.75
+base.cut_cylinder(
+    target=main,
+    radius=M,
+    depth=MAIN_THICKNESS,
+    location=(M * 4, MAIN_HEIGHT / 2, MAIN_DEPTH / 2),
+    rotation=(math.pi / 2, 0.0, 0.0),
+)
+base.cut_cylinder(
+    target=main,
+    radius=M,
+    depth=MAIN_THICKNESS,
+    location=(M, MAIN_HEIGHT / 2, MAIN_DEPTH / 2),
+    rotation=(math.pi / 2, 0.0, 0.0),
+)
+base.cut_cylinder(
+    target=main,
+    radius=M,
+    depth=MAIN_THICKNESS,
+    location=(-M * 2, MAIN_HEIGHT / 2, MAIN_DEPTH / 2),
+    rotation=(math.pi / 2, 0.0, 0.0),
+)
