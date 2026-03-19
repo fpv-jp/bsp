@@ -99,9 +99,9 @@ base.cut_cube(
     location=(0.95, -8.55, 4.9),
 )
 
-## wifi
+# wifi
 
-## ----pin
+# ----pin
 #base.add_cube(
 #    target=main,
 #    scale=(35.1, 3.0, 1.2),
@@ -122,17 +122,17 @@ base.cut_cube(
 #    scale=(3.0, 32.4, 1.2),
 #    location=(21.15, 9.5, 5.6),
 #)
-## ----cut
-#base.cut_cube(
-#    target=main,
-#    scale=(32.1, 32.4, 10.0),
-#    location=(10.15, 11.0, 4.9),
-#)
+# ----cut
+base.cut_cube(
+    target=main,
+    scale=(32.1, 32.4, 10.0),
+    location=(10.15, 11.0, 0.0),
+)
 
 ## ----wifi-ptate
 #base.add_cube(
 #    target=main,
-#    scale=(32.1, 32.4, 0.75),
+#    scale=(32.1, 32.4, CM4_THICKNESS),
 #    location=(10.15, 11.0, 6.525),
 #)
 #base.cut_cube(
