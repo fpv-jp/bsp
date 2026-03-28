@@ -175,6 +175,6 @@ for i, (x) in enumerate([57.6/2+M, -57.6/2-M]):
         outer_radius=M * 2,
         inner_radius=M,
         depth=CM4_THICKNESS,
-        location=(x, 0.0, CM4_THICKNESS/2),
+        location=(x, 6.5, CM4_THICKNESS/2),
     )
 # ------------------------
