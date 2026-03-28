@@ -56,7 +56,7 @@ for i, (x, y) in enumerate(holes):
 
 M = 1.75
 ARM = CM4_WIDTH + M * 6
-MAIN_THICKNESS = 2.5
+BAR_THICKNESS = 1.25
 
 
 def bar():
@@ -64,7 +64,7 @@ def bar():
         scale=(
             ARM,
             M * 4,
-            MAIN_THICKNESS,
+            BAR_THICKNESS,
         ),
     )
     for i, (x) in enumerate([ARM / 2, -ARM / 2]):
@@ -72,13 +72,13 @@ def bar():
             target=b,
             outer_radius=M * 2,
             inner_radius=M,
-            depth=MAIN_THICKNESS,
+            depth=BAR_THICKNESS,
             location=(x, 0.0, 0.0),
         )
     return b
 
 b = bar()
-b.location = (0.0, 0.0, -8.8/2 + MAIN_THICKNESS/2 )
+b.location = (0.0, 0.0, -8.8/2 + BAR_THICKNESS/2 )
 base.modifier_apply(obj=b, target=main, operation="UNION")
 # ----------------------------------------------------------------------------------------------------------------
 

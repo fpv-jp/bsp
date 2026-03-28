@@ -60,13 +60,14 @@ wifi = base.create_cube(
 
 M = 1.75
 ARM =  56.2 + M * 6
+BAR_THICKNESS = 1.25
 
 def bar():
     b = base.create_cube(
         scale=(
             ARM,
             M * 4,
-            MAIN_THICKNESS,
+            BAR_THICKNESS,
         ),
     )
     for i, (x) in enumerate([ARM / 2, -ARM / 2]):
@@ -74,13 +75,13 @@ def bar():
             target=b,
             outer_radius=M * 2,
             inner_radius=M,
-            depth=MAIN_THICKNESS,
+            depth=BAR_THICKNESS,
             location=(x, 0.0, 0.0),
         )
     return b
 
 b = bar()
-b.location = (0.0, 0.0, (MAIN_THICKNESS-MAIN_DEPTH)/2 )
+b.location = (0.0, 0.0, (BAR_THICKNESS-MAIN_DEPTH)/2 )
 base.modifier_apply(obj=b, target=wifi, operation="UNION")
 
 # ------------------------
