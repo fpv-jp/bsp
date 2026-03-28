@@ -110,12 +110,12 @@ base.cut_cube(
 
 def ring():
     main = base.create_cylinder(
-        radius=2.0,
+        radius=4.0,
         depth=MAIN_DEPTH,
     )
     base.cut_cylinder(
         target=main,
-        radius=1.25,
+        radius=3.0,
         depth=MAIN_DEPTH,
     )
     return main
