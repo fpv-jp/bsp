@@ -128,7 +128,7 @@ base.add_ring(
 
 main.location = (0, -plate_height/2-M3 * 2, (plate_depth-plate_thickness)/2)
 
-x = 18.9
+x = 19.0
 y = 0.0
 
 holes = [(x, y), (-x, y)]
@@ -136,8 +136,8 @@ holes = [(x, y), (-x, y)]
 for i, (x, y) in enumerate(holes):
     base.add_cube(
         target=main,
-        scale=(M3 * 4, M3 * 2, plate_thickness),
-        location=(x, -M3, 0),
+        scale=(M3 * 4, M3 * 3, plate_thickness),
+        location=(x, -M3*1.5, 0),
     )
     base.add_ring(
         target=main,
