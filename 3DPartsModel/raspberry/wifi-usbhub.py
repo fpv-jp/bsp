@@ -115,7 +115,7 @@ def ring():
     )
     base.cut_cylinder(
         target=main,
-        radius=2.5,
+        radius=2.2,
         depth=MAIN_DEPTH,
     )
     return main
@@ -127,7 +127,7 @@ positions=[
 ]
 
 for i, (x, y) in enumerate(positions):
-    base.cut_cylinder(target=wifi, radius=1.25, depth=MAIN_DEPTH, location=(x, y, 0.0))
+    base.cut_cylinder(target=wifi, radius=1.15, depth=MAIN_DEPTH, location=(x, y, 0.0))
     ring_ = ring()
     ring_.location = (x, y, 0.0)
     base.modifier_apply(obj=ring_, target=wifi, operation="UNION")
