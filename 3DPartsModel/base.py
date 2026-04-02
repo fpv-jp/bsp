@@ -181,6 +181,14 @@ def cut_corners(target, width, height, depth, thickness):
     add_pins(target, thickness, depth + thickness, [(x, y), (x, -y), (-x, y), (-x, -y)])
 
 
+def cut_inner_corners(target, width, height, depth, thickness):
+    """Add fillets to inner corners of a rectangular hole."""
+    x, y = width / 2 - thickness, height / 2 - thickness
+    cut_holes(target, thickness, depth, [(x, y), (x, -y), (-x, y), (-x, -y)], z=thickness)
+    cut_cube(target, (width - thickness * 2, height, depth), (0, 0, thickness))
+    cut_cube(target, (width, height - thickness * 2, depth), (0, 0, thickness))
+
+
 # =============================================================================
 # Object Operations
 # =============================================================================
