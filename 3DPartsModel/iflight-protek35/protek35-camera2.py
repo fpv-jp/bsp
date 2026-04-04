@@ -19,7 +19,7 @@ M3 = 1.75
 
 cube_width = 19.3
 cube_height = M2_5 * 4
-cube_depth = 18.0
+cube_depth = 14.0
 
 cube_thickness = 1.75
 
