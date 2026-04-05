@@ -78,24 +78,24 @@ base.cut_cylinder(
 
 main.location = (0, -7.95, 0)
 D = 6.0
-base.add_ring(
+
+base.add_cube(
     target=main,
-    outer_radius=3.5 / 2 + 1.25,
-    inner_radius=3.5 / 2,
-    depth=D,
+    scale=(9.5, 6, 3.7),
     location=(0, 0, D / 2),
+)
+
+base.cut_cylinder(
+    target=main,
+    radius=3.5 / 2,
+    depth=11.0,
+    location=(0, 0, D / 2 + 1),
+    rotation=(0, math.pi / 2, 0),
 )
 base.cut_cylinder(
     target=main,
     radius=3.5 / 2,
-    depth=7.0,
-    location=(0, 0, D / 2 + 1),
-    rotation=(0, math.pi / 2, 0),
-)
-base.cut_cube(
-    target=main,
-    scale=(7.0, 3.5, 4.0),
-    location=(0, 0, D / 2 + BASE_PLATE_THICKNESS + 1),
+    depth=11.0,
 )
 base.cut_cube(
     target=main,
@@ -122,5 +122,5 @@ base.cut_cube(
 base.cut_cube(
     target=main,
     scale=(9.0, 6.5, 10.0),
-    location=(0, xy / 2 - 1.0, 0),
+    location=(0, xy / 2 - 0.5, 0),
 )
