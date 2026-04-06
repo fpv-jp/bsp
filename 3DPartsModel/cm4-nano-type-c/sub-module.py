@@ -11,7 +11,7 @@ sys.modules[module_name] = module
 
 import base
 
-base.init()
+# base.init()
 
 MAIN_WIDTH = 37.0
 MAIN_HEIGHT = 37.0
@@ -32,7 +32,7 @@ main = base.create_cube(
 base.add_cube(
     target=main,
     scale=(
-        15.3,
+        16.9,
         66.0,
         MAIN_THICKNESS,
     ),
@@ -69,7 +69,7 @@ base.cut_holes(
     positions=[(X, Y), (-X, Y), (X, -Y), (-X, -Y)],
 )
 
-X = 19 / 4
+X = 23.8 / 4
 Y = 56 / 2
 
 base.cut_holes(
@@ -86,24 +86,24 @@ main.location = (0.0, 0.0, (MAIN_DEPTH) / 2)
 # -------------------------------- hub
 
 R = 1.25
-POSX = 19.0 / 2 + R / 2
-POSY = -30.0 / 2 + R * 2
+POSX = 19.0 / 2 + R / 2 - 2.6
+POSY = 27.5 / 2
 
 base.cut_holes(
     target=main,
     radius=1.25,
     depth=20.0,
     positions=[
-        (0.0, 30.0 / 2),
-        (POSX, POSY),
-        (-POSX, POSY),
+        (0.0, POSY),
+        (POSX, -POSY),
+        (-POSX, -POSY),
     ],
 )
 
 # -------------------------------- wif
 
-MAIN_WIDTH = 32.3
-MAIN_HEIGHT = 32.3
+MAIN_WIDTH = 33.3
+MAIN_HEIGHT = 33.3
 
 MAIN_BOTTOM = -MAIN_DEPTH / 2
 
@@ -162,9 +162,9 @@ base.cut_cube(
 # -------------------------------- ubec
 
 
-MAIN_WIDTH = 39.2
+MAIN_WIDTH = 39.7
 MAIN_HEIGHT = 21.5
-MAIN_DEPTH = 12.0
+MAIN_DEPTH = 10.5
 
 MAIN_THICKNESS = 2.5
 
