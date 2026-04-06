@@ -70,12 +70,12 @@ base.cut_holes(
 )
 
 X = 23.8 / 4
-Y = 56 / 2
+Y = 44 / 2
 
 base.cut_holes(
     target=main,
     radius=R,
-    depth=MAIN_THICKNESS,
+    depth=10.0,
     z=MAIN_BOTTOM + MAIN_THICKNESS / 2,
     positions=[(X, Y), (-X, Y), (X, -Y), (-X, -Y)],
 )
@@ -128,8 +128,8 @@ base.cut_cube(
 base.cut_cube(
     target=wifi,
     scale=(
-        8.0,
-        8.0,
+        6.0,
+        6.0,
         MAIN_THICKNESS,
     ),
     location=(-MAIN_WIDTH / 2, MAIN_HEIGHT / 2, MAIN_THICKNESS/2),
@@ -137,8 +137,8 @@ base.cut_cube(
 base.cut_cube(
     target=wifi,
     scale=(
-        8.0,
-        8.0,
+        6.0,
+        6.0,
         MAIN_THICKNESS,
     ),
     location=(-MAIN_WIDTH / 2, -MAIN_HEIGHT / 2, MAIN_THICKNESS/2),
