@@ -86,8 +86,8 @@ main.location = (0.0, 0.0, (MAIN_DEPTH) / 2)
 # -------------------------------- hub
 
 R = 1.25
-POSX = 19.0 / 2 + R / 2 - 2.6
-POSY = 25.0 / 2
+POSX = 18.0 / 2
+POSY = 26.0 / 2
 
 base.cut_holes(
     target=main,
@@ -130,18 +130,18 @@ base.cut_cube(
     scale=(
         8.0,
         8.0,
-        20.0,
+        MAIN_THICKNESS,
     ),
-    location=(-MAIN_WIDTH / 2, MAIN_HEIGHT / 2, 0.0),
+    location=(-MAIN_WIDTH / 2, MAIN_HEIGHT / 2, MAIN_THICKNESS/2),
 )
 base.cut_cube(
     target=wifi,
     scale=(
         8.0,
         8.0,
-        20.0,
+        MAIN_THICKNESS,
     ),
-    location=(-MAIN_WIDTH / 2, -MAIN_HEIGHT / 2, 0.0),
+    location=(-MAIN_WIDTH / 2, -MAIN_HEIGHT / 2, MAIN_THICKNESS/2),
 )
 
 
@@ -152,11 +152,11 @@ base.modifier_apply(obj=wifi, target=main, operation="UNION")
 base.cut_cube(
     target=main,
     scale=(
-        MAIN_WIDTH - 4,
+        MAIN_WIDTH - 6,
         20.0,
         20.0,
     ),
-    location=(MAIN_WIDTH / 6 - 35.0, 0.0, 0.0),
+    location=(MAIN_WIDTH / 6 - 37.0, 0.0, 0.0),
 )
 
 # -------------------------------- ubec
