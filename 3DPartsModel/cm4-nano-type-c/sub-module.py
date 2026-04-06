@@ -11,7 +11,7 @@ sys.modules[module_name] = module
 
 import base
 
-# base.init()
+base.init()
 
 MAIN_WIDTH = 37.0
 MAIN_HEIGHT = 37.0
@@ -87,7 +87,7 @@ main.location = (0.0, 0.0, (MAIN_DEPTH) / 2)
 
 R = 1.25
 POSX = 19.0 / 2 + R / 2 - 2.6
-POSY = 27.5 / 2
+POSY = 25.0 / 2
 
 base.cut_holes(
     target=main,
