@@ -94,9 +94,9 @@ base.cut_holes(
     radius=1.25,
     depth=20.0,
     positions=[
-        (0.0, POSY),
-        (POSX, -POSY),
-        (-POSX, -POSY),
+        (0.0, -POSY),
+        (POSX, POSY),
+        (-POSX, POSY),
     ],
 )
 
@@ -241,7 +241,7 @@ base.cut_cube(
     ),
 )
 
-ubec.rotation_euler = (0, 0, -math.pi / 2)
+ubec.rotation_euler = (0, 0, math.pi / 2)
 ubec.location = (31.75, 0.0, (MAIN_DEPTH) / 2)
 
 base.modifier_apply(obj=ubec, target=main, operation="UNION")
