@@ -29,17 +29,6 @@ main = base.create_cube(
     ),
 )
 
-base.add_cube(
-    target=main,
-    scale=(
-        16.9,
-        66.0,
-        MAIN_THICKNESS,
-    ),
-    location=(0.0, 0.0, (MAIN_THICKNESS - MAIN_DEPTH) / 2),
-)
-
-
 base.cut_corners(
     target=main,
     width=MAIN_WIDTH,
@@ -69,15 +58,29 @@ base.cut_holes(
     positions=[(X, Y), (-X, Y), (X, -Y), (-X, -Y)],
 )
 
-X = 23.8 / 4
-Y = 44 / 2
+P = 35.0
+Y = -(MAIN_HEIGHT + MAIN_THICKNESS * 2) / 2 - 4.5
+
+base.add_cube(
+    target=main,
+    scale=(
+        P,
+        9.0,
+        MAIN_THICKNESS,
+    ),
+    location=(0.0, Y, (MAIN_THICKNESS - MAIN_DEPTH) / 2),
+)
+
+X = 6
+P = P / 4
+Y = Y - R
 
 base.cut_holes(
     target=main,
     radius=R,
     depth=10.0,
     z=MAIN_BOTTOM + MAIN_THICKNESS / 2,
-    positions=[(X, Y), (-X, Y), (X, -Y), (-X, -Y)],
+    positions=[(P + X, Y), (P - X, Y), (-P + X, Y), (-P - X, Y)],
 )
 
 
@@ -132,7 +135,7 @@ base.cut_cube(
         6.0,
         MAIN_THICKNESS,
     ),
-    location=(-MAIN_WIDTH / 2, MAIN_HEIGHT / 2, MAIN_THICKNESS/2),
+    location=(-MAIN_WIDTH / 2, MAIN_HEIGHT / 2, MAIN_THICKNESS / 2),
 )
 base.cut_cube(
     target=wifi,
@@ -141,7 +144,7 @@ base.cut_cube(
         6.0,
         MAIN_THICKNESS,
     ),
-    location=(-MAIN_WIDTH / 2, -MAIN_HEIGHT / 2, MAIN_THICKNESS/2),
+    location=(-MAIN_WIDTH / 2, -MAIN_HEIGHT / 2, MAIN_THICKNESS / 2),
 )
 
 
