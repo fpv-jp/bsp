@@ -28,6 +28,33 @@ main = base.create_cube(
         FULL,
     ),
 )
+
+### ----------------------------------------------------------------------------------------------------------------
+
+M = 3.5
+ARM = 57.0
+POS = -4.0
+
+base.add_cube(
+    target=main,
+    scale=(
+        M * 3,
+        ARM,
+        FULL,
+    ),
+    location=(POS, 0.0, 0.0),
+)
+
+for i, (y) in enumerate([ARM / 2, -ARM / 2]):
+    base.add_ring(
+        target=main,
+        outer_radius=M * 1.5,
+        inner_radius=M,
+        depth=FULL,
+        location=(POS, y, 0.0),
+    )
+### ----------------------------------------------------------------------------------------------------------------
+
 base.cut_corners(
     target=main,
     width=CM4_WIDTH,
@@ -94,4 +121,4 @@ base.cut_holes(
 ### ----------------------------------------------------------------------------------------------------------------
 
 main2.location = ((CM4_WIDTH - WIDTH) / 2, 0.0, 0.0)
-base.join(target=main2, obj=main)
+base.join(target=main, obj=main2)
