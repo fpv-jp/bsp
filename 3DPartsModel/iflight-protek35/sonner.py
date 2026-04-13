@@ -48,9 +48,10 @@ ARM = 15.8 / 2
 M = 1.25
 
 for i, (x) in enumerate([ARM, -ARM]):
-    base.cut_cylinder(
+    base.add_ring(
         target=main,
-        radius=M,
-        depth=10,
-        location=(x, 0.0, 0.0),
+        outer_radius=M * 2.5,
+        inner_radius=M,
+        depth=3.5,
+        location=(x, 0.0, 3.5 / 2 - MAIN_DEPTH / 2),
     )

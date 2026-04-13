@@ -39,7 +39,7 @@ for i, (x) in enumerate([ARM, -ARM]):
         outer_radius=M * 2.25,
         inner_radius=M,
         depth=MAIN_DEPTH,
-        location=(x, 0.0, 0.0),
+        location=(x, M * 2, 0.0),
     )
 
 base.cut_cube(
@@ -57,7 +57,7 @@ base.cut_cube(
 base.cut_cube(
     target=main,
     scale=(6.0, 3.0, MAIN_DEPTH),
-    location=(-1.0, MAIN_HEIGHT/2, MAIN_THICKNESS),
+    location=(-1.0, MAIN_HEIGHT / 2, MAIN_THICKNESS),
 )
 
 
@@ -66,5 +66,5 @@ for i, (x) in enumerate([ARM, -ARM]):
         target=main,
         radius=2.0,
         depth=MAIN_DEPTH,
-        location=(x, 0.0, MAIN_THICKNESS / 2),
+        location=(x, M * 2, MAIN_THICKNESS / 2),
     )

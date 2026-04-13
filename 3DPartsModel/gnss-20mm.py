@@ -51,7 +51,7 @@ base.cut_cube(
     target=main,
     scale=(
         9.0,
-        8.0,
+        9.0,
         MAIN_DEPTH,
     ),
     location=(0, MAIN_HEIGHT / 2, 0),
@@ -88,8 +88,18 @@ for i, (x, y) in enumerate(positions):
         location=(x, y, 0.0),
     )
 
+base.add_cube(
+    target=main,
+    scale=(
+        M * 4,
+        M * 4,
+        MAIN_THICKNESS,
+    ),
+    location=(0, -MAIN_HEIGHT / 2 - (M * 2.75) / 2, 0.0),
+)
+
 positions = [
-    (0.0, -MAIN_HEIGHT / 2 - M * 2),
+    (0.0, -MAIN_HEIGHT / 2 - M * 2.75),
 ]
 for i, (x, y) in enumerate(positions):
     base.add_ring(
@@ -97,5 +107,5 @@ for i, (x, y) in enumerate(positions):
         outer_radius=M * 2,
         inner_radius=M,
         depth=MAIN_THICKNESS * 1.0,
-        location=(x, y, 0.5),
+        location=(x, y, 0.0),
     )
