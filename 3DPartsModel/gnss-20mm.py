@@ -13,8 +13,8 @@ import base
 
 base.init()
 
-MAIN_WIDTH = 20.2
-MAIN_HEIGHT = 20.2
+MAIN_WIDTH = 20.4
+MAIN_HEIGHT = 20.4
 MAIN_DEPTH = 7.2
 
 MAIN_THICKNESS = 1.25
