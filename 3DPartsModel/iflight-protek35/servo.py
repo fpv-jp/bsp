@@ -27,7 +27,7 @@ X = 3.4
 Y = 20.0
 Y2 = 27.2
 Z = 8.3
-M = 0.8
+M = 0.7
 P = 11.8
 
 
@@ -35,28 +35,35 @@ x = 13.75
 y = 0.0
 
 
-main = base.create_cube(scale=(x * 2, cube_height, Z / 2))
+main = base.create_cube(scale=(x * 2 + Z, cube_height, Z / 2))
 
-base.add_cube(
-    target=main, scale=(x * 2 + M2_5 * 4, cube_height / 2, Z / 2), location=(0, cube_height / 4, 0)
-)
+#base.add_cube(
+#    target=main, scale=(x * 2 + M2_5 * 4, cube_height / 2, Z / 2), location=(0, cube_height / 4, 0)
+#)
 
 
-holes2 = [
-    (x, y),
-    (-x, y),
-]
+#holes2 = [
+#    (x, y),
+#    (-x, y),
+#]
 
-for i, (x, y) in enumerate(holes2):
-    base.add_ring(
+#for i, (x, y) in enumerate(holes2):
+#    base.add_ring(
+#        target=main,
+#        outer_radius=M2_5 * 2,
+#        inner_radius=M2_5,
+#        location=(x, y, 0),
+#        depth=Z / 2,
+#    )
+for i, (x) in enumerate([x,-x]):
+    base.cut_cylinder(
         target=main,
-        outer_radius=M2_5 * 2,
-        inner_radius=M2_5,
-        location=(x, y, 0),
+        radius=M2_5,
         depth=Z / 2,
+        location=(x, 0.0, 0.0),
     )
 
-main.location = (0.0, -(Y2 + cube_height) / 2, Z / 4)
+main.location = (Z / 2, -(Y2 + cube_height) / 2, Z / 4)
 
 ################################################################
 
@@ -74,7 +81,7 @@ for i, (y) in enumerate([P, -P]):
 
 base.cut_cube(target=main2, scale=(X, Y, Z))
 
-main2.location = (15.0, 0.0, Z)
+main2.location = (15.0 + Z, -7.0, Z)
 
 ################################################################
 
@@ -85,7 +92,7 @@ main3 = base.create_cube(scale=(X, Y2, Z), location=(0, 0, -Z / 2))
 base.add_ring(
     target=main3,
     outer_radius=Z / 2,
-    inner_radius=1.8,
+    inner_radius=2.2,
     location=(0, (Y - Z) / 2 - 0.1, 0),
     depth=X,
     rotation=(0, math.pi / 2, 0),
@@ -104,7 +111,7 @@ base.cut_cube(
     location=(0, Y, 0),
 )
 
-main3.location = (-15.0, 0.0, Z)
+main3.location = (-15.0, -7.0, Z)
 
 ################################################################
 
