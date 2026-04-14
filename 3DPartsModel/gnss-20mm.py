@@ -95,11 +95,11 @@ base.add_cube(
         M * 4,
         MAIN_THICKNESS,
     ),
-    location=(0, -MAIN_HEIGHT / 2 - (M * 2.75) / 2, 0.0),
+    location=(0, -MAIN_HEIGHT / 2 - (M * 2.0) / 2, 0.0),
 )
 
 positions = [
-    (0.0, -MAIN_HEIGHT / 2 - M * 2.75),
+    (0.0, -MAIN_HEIGHT / 2 - M * 2.6),
 ]
 for i, (x, y) in enumerate(positions):
     base.add_ring(
