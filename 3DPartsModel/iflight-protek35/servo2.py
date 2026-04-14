@@ -42,22 +42,22 @@ base.cut_corners(
 base.add_cube(
     target=main,
     scale=(MAIN_WIDTH, MAIN_DEPTH, MAIN_DEPTH),
-    location=(MAIN_THICKNESS, 0.0, PITCH - MAIN_DEPTH / 2),
+    location=(MAIN_THICKNESS, 0.0, PITCH-MAIN_DEPTH/2),
 )
 
 base.add_ring(
     target=main,
-    outer_radius=MAIN_DEPTH / 2,
-    inner_radius=0.7,
+    outer_radius=MAIN_DEPTH/2,
+    inner_radius=.7,
     location=(MAIN_THICKNESS, 0, PITCH),
     depth=MAIN_WIDTH,
     rotation=(0, math.pi / 2, 0),
 )
 
-for i, (y) in enumerate([PITCH, -PITCH]):
+for i, (y) in enumerate([PITCH,-PITCH]):
     base.cut_cylinder(
         target=main,
-        radius=0.7,
+        radius=.7,
         depth=MAIN_WIDTH,
         location=(MAIN_THICKNESS, y, 0.0),
         rotation=(0, math.pi / 2, 0),
@@ -66,15 +66,15 @@ for i, (y) in enumerate([PITCH, -PITCH]):
 
 base.add_cylinder(
     target=main,
-    radius=1.75,
+    radius=1.9,
     depth=MAIN_WIDTH,
-    location=(-5.0, 0.0, 0.0),
+    location=(-5.5, 0.0, 0.0),
     rotation=(0, math.pi / 2, 0),
 )
 base.cut_cylinder(
     target=main,
     radius=1.1,
-    depth=MAIN_WIDTH * 2,
+    depth=MAIN_WIDTH*2,
     rotation=(0, math.pi / 2, 0),
 )
 

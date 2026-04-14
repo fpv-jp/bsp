@@ -36,11 +36,18 @@ y = 0.0
 
 
 main = base.create_cube(
-scale=(x * 2 + 8.0, cube_height, Z / 2),
-location=(3.0, 0.0, 0.0),
+scale=(39.0, cube_height, Z / 2),
+location=(3.0, 0.0, Z / 4),
 )
+#for i, (x) in enumerate([x,-x]):
+#    base.cut_cylinder(
+#        target=main,
+#        radius=M2_5,
+#        depth=10.0,
+#        location=(x, 0.0, 0.0),
+#    )
 
-main.location = (0.0, -(Y2 + cube_height) / 2, Z / 4)
+main.location = (0.0, -(Y2 + cube_height) / 2, 0.0)
 
 #################################################################
 
@@ -58,7 +65,7 @@ for i, (y) in enumerate([P, -P]):
 
 base.cut_cube(target=main2, scale=(X, Y, Z))
 
-main2.location = (15.0 + 7.0 , -6.0, Z)
+main2.location = (22.0 , -8.0, Z)
 
 #################################################################
 
@@ -88,7 +95,7 @@ base.cut_cube(
     location=(0, Y, 0),
 )
 
-main3.location = (-15.0, -6.0, Z)
+main3.location = (-12.0, -8.0, Z)
 
 #################################################################
 
