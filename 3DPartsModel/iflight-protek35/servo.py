@@ -35,37 +35,14 @@ x = 13.75
 y = 0.0
 
 
-main = base.create_cube(scale=(x * 2 + Z, cube_height, Z / 2))
+main = base.create_cube(
+scale=(x * 2 + 8.0, cube_height, Z / 2),
+location=(3.0, 0.0, 0.0),
+)
 
-#base.add_cube(
-#    target=main, scale=(x * 2 + M2_5 * 4, cube_height / 2, Z / 2), location=(0, cube_height / 4, 0)
-#)
+main.location = (0.0, -(Y2 + cube_height) / 2, Z / 4)
 
-
-#holes2 = [
-#    (x, y),
-#    (-x, y),
-#]
-
-#for i, (x, y) in enumerate(holes2):
-#    base.add_ring(
-#        target=main,
-#        outer_radius=M2_5 * 2,
-#        inner_radius=M2_5,
-#        location=(x, y, 0),
-#        depth=Z / 2,
-#    )
-for i, (x) in enumerate([x,-x]):
-    base.cut_cylinder(
-        target=main,
-        radius=M2_5,
-        depth=Z / 2,
-        location=(x, 0.0, 0.0),
-    )
-
-main.location = (Z / 2, -(Y2 + cube_height) / 2, Z / 4)
-
-################################################################
+#################################################################
 
 main2 = base.create_cube(scale=(X, Y2, Z), location=(0, 0, -Z / 2))
 
@@ -81,9 +58,9 @@ for i, (y) in enumerate([P, -P]):
 
 base.cut_cube(target=main2, scale=(X, Y, Z))
 
-main2.location = (15.0 + Z, -7.0, Z)
+main2.location = (15.0 + 7.0 , -6.0, Z)
 
-################################################################
+#################################################################
 
 main3 = base.create_cube(scale=(X, Y2, Z), location=(0, 0, -Z / 2))
 
@@ -111,9 +88,19 @@ base.cut_cube(
     location=(0, Y, 0),
 )
 
-main3.location = (-15.0, -7.0, Z)
+main3.location = (-15.0, -6.0, Z)
 
-################################################################
+#################################################################
 
 base.modifier_apply(obj=main2, target=main, operation="UNION")
 base.modifier_apply(obj=main3, target=main, operation="UNION")
+
+main.location = (0.0, 0.0, 0.0)
+
+for i, (x) in enumerate([x,-x]):
+    base.cut_cylinder(
+        target=main,
+        radius=M2_5,
+        depth=10.0,
+        location=(x, 0.0, 0.0),
+    )
