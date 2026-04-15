@@ -13,10 +13,10 @@ import base
 
 base.init()
 
-M = 1.5
+M = 1.25
 
 MAIN_WIDTH = 35.8
-MAIN_HEIGHT = M * 5
+MAIN_HEIGHT = M * 4
 MAIN_DEPTH = 1.5
 
 main = base.create_cube(
@@ -30,34 +30,34 @@ ARM = 35.8
 for i, (x) in enumerate([ARM / 2, -ARM / 2]):
     base.add_ring(
         target=main,
-        outer_radius=M * 2.5,
+        outer_radius=M * 2,
         inner_radius=M,
-        depth=3.5,
-        location=(x, 0.0, 3.5 / 2 - MAIN_DEPTH / 2),
+        depth=MAIN_DEPTH,
+        location=(x, 0.0, 0.0),
     )
-    base.cut_cylinder(
-        target=main,
-        radius=2.5,
-        depth=3.5,
-        location=(x, 0.0, 3.5 / 2 + MAIN_DEPTH / 2),
-    )
+#    base.cut_cylinder(
+#        target=main,
+#        radius=2.5,
+#        depth=3.5,
+#        location=(x, 0.0, 3.5 / 2 + MAIN_DEPTH / 2),
+#    )
 
 # ------------------------
 
-ARM = 15.8 / 2
-M = 1.25
+#ARM = 15.8 / 2
+#M = 1.25
 
-for i, (x) in enumerate([ARM, -ARM]):
-    base.add_ring(
-        target=main,
-        outer_radius=M * 2.75,
-        inner_radius=M,
-        depth=3.6,
-        location=(x, 0.0, 3.5 / 2 - MAIN_DEPTH / 2),
-    )
-    base.cut_cylinder(
-        target=main,
-        radius=2.25,
-        depth=3.5,
-        location=(x, 0.0, 3.5 / 2 + MAIN_DEPTH / 2),
-    )
+#for i, (x) in enumerate([ARM, -ARM]):
+#    base.add_ring(
+#        target=main,
+#        outer_radius=M * 2.75,
+#        inner_radius=M,
+#        depth=3.6,
+#        location=(x, 0.0, 3.5 / 2 - MAIN_DEPTH / 2),
+#    )
+#    base.cut_cylinder(
+#        target=main,
+#        radius=2.25,
+#        depth=3.5,
+#        location=(x, 0.0, 3.5 / 2 + MAIN_DEPTH / 2),
+#    )
