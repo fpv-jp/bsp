@@ -73,7 +73,7 @@ cube_width = 20.0
 cube_height = 5.0
 cube_depth = 8.0
 
-main.location = (0.0, -M_O, (cube_thickness - cube_depth) / 2)
+main.location = (0.0, -2.2, (cube_thickness - cube_depth) / 2)
 
 base.add_cube(
     target=main,
