@@ -75,10 +75,11 @@ for i, (x, y) in enumerate(holes):
     )
 
 # ----------------------------------------------------------------------------------------------------------------
-main.location = (2.5, 0.0, 0.0)
 
-X = 30.5 / 2
-Y = 30.5 / 2
+main.location = (10.0, 0.0, 0.0)
+
+X = 20.0 / 2
+Y = 20.0 / 2
 holes = [(X, Y), (X, -Y), (-X, Y), (-X, -Y)]
 for i, (x, y) in enumerate(holes):
     base.cut_cylinder(
@@ -92,4 +93,28 @@ base.cut_cylinder(
     target=main,
     radius=18.0 / 2,
     depth=CM4_DEPTH + CM4_THICKNESS,
+)
+
+# ----------------------------------------------------------------------------------------------------------------
+Z = (CM4_DEPTH + CM4_THICKNESS) / 2
+main.location = (33.85, 0.0, Z+CM4_THICKNESS/1.715)
+
+CM4_WIDTH = 7.0
+CM4_HEIGHT = 10.0
+CM4_DEPTH = 12.0
+
+CM4_THICKNESS = 1.75
+
+Z = (CM4_DEPTH + CM4_THICKNESS) / 2
+
+base.add_cube(
+    target=main,
+    scale=(CM4_WIDTH + CM4_THICKNESS * 2, CM4_HEIGHT, CM4_DEPTH),
+    location=(0, 0, Z),
+)
+
+base.cut_cube(
+    target=main,
+    scale=(CM4_WIDTH, CM4_HEIGHT, CM4_DEPTH),
+    location=(0, 0, Z + CM4_THICKNESS),
 )
