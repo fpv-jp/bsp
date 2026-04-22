@@ -27,7 +27,7 @@ Y = 20.0
 Y2 = 27.2
 Z = 16.0
 
-CENTER = (Y - Z) / 2 - 0.1
+CENTER = Y / 2 - 4.0
 
 main = base.create_cube(
     scale=(34.0, cube_height, 3.0),
