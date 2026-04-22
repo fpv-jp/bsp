@@ -45,18 +45,18 @@ base.cut_cylinder(
 P2 = 2.0
 
 holes = [
-    (-X2 - 5.5 - P2 * 1),
+    #    (-X2 - 5.5 - P2 * 1),
     (-X2 - 5.5 - P2 * 0),
     (-X2 + 5.5 + P2 * 0),
-    (-X2 + 5.5 + P2 * 1),
-    (-X2 + 5.5 + P2 * 2),
+    #    (-X2 + 5.5 + P2 * 1),
+    #    (-X2 + 5.5 + P2 * 2),
     (-X2 + 5.5 + P2 * 3),
 ]
 
 for i, (y) in enumerate(holes):
     base.cut_cylinder(
         target=main,
-        radius=0.5,
+        radius=0.9,
         depth=3.0,
         location=(y, 0.0, 0.0),
     )
