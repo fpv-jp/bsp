@@ -22,7 +22,7 @@ MAIN_THICKNESS = 1.75
 POSX = 18.0 / 2
 POSY = 26.0 / 2
 
-# -------------------------------- wif
+# --------------------------------
 
 R1 = 4.5 / 2
 P = 62.5 / 2
@@ -78,8 +78,9 @@ for i, (x, y) in enumerate(positions):
 
 # -------------------------------- wif
 
-MAIN_WIDTH = 33.3
-MAIN_HEIGHT = 33.3
+MAIN_WIDTH = 33.1
+MAIN_HEIGHT = 33.1
+MAIN_DEPTH = 5.3
 
 main.location = (
     -MAIN_WIDTH / 2 - R1 * 2 - MAIN_THICKNESS / 2,
@@ -118,6 +119,14 @@ for i, (y) in enumerate([X2, -X2]):
         location=(MAIN_WIDTH / 2, y, MAIN_THICKNESS),
     )
 
+base.add_ring(
+    target=main,
+    outer_radius=R * 2,
+    inner_radius=R,
+    depth=MAIN_DEPTH,
+    location=(MAIN_WIDTH / 2 + R * 2, 0.0, MAIN_THICKNESS * 1.5),
+)
+
 wifi.location = (0.0, 0.0, MAIN_DEPTH / 2)
 base.modifier_apply(obj=wifi, target=main, operation="UNION")
 
@@ -132,7 +141,7 @@ base.cut_cube(
     scale=(
         X,
         18.0,
-        10.0,
+        12.0,
     ),
     location=(-X / 2, 0.0, 0.0),
 )
