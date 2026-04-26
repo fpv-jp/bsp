@@ -70,13 +70,15 @@ Y = (30.5 + M) / 2
 
 M = 1.4
 H = 8.0
-for i, (x, y) in enumerate([(X, Y), (X, -Y), (-X, Y), (-X, -Y)],):
+for i, (x, y) in enumerate(
+    [(X, Y), (X, -Y), (-X, Y), (-X, -Y)],
+):
     base.add_ring(
         target=main,
         outer_radius=M * 2.5,
         inner_radius=M,
         depth=H,
-        location=(x, y, H/2-FULL/2),
+        location=(x, y, H / 2 - FULL / 2),
     )
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -92,38 +94,6 @@ base.cut_holes(
 
 # ----------------------------------------------------------------------------------------------------------------
 
-#CM4_WIDTH2 = CM4_WIDTH/2
-#CM4_HEIGHT2 = CM4_HEIGHT - 12
-
-#base.cut_cube(
-#    target=main,
-#    scale=(CM4_WIDTH2, CM4_HEIGHT2, CM4_DEPTH + CM4_THICKNESS),
-#    location=(-CM4_WIDTH/2+CM4_WIDTH2/2+6.0, 0.0, 0.0),
-#)
-
-
-#x1 = 22.25
-#y1 = 15.0
-
-#t = [(3.5, 0, 0), (0, 3.5, 0), (0, 0, 0)]
-#triangle_positions = [
-#    (-x1, y1, t, 270),
-##    (x1, y1, t, 180),
-##    (x1, -y1, t, 90),
-#    (-x1, -y1, t, 0),
-#]
-
-#for i, (x, y, verts, rotation) in enumerate(triangle_positions):
-#    base.add_triangle(
-#        target=main,
-#        verts=verts,
-#        depth=FULL,
-#        location=(x, y, (-CM4_THICKNESS - CM4_DEPTH) / 2),
-#        rotation=(0, 0, math.radians(rotation)),
-#    )
-
-# ----------------------------------------------------------------------------------------------------------------
-
 R = 1.25
 POSX = 26.0 / 2
 POSY = 17.0 / 2
@@ -134,12 +104,26 @@ base.cut_holes(
     radius=1.25,
     depth=20.0,
     positions=[
-        (POSX+P, 0.0),
-        (-POSX+P, POSY),
-        (-POSX+P, -POSY),
+        (POSX + P, 0.0),
+        (-POSX + P, POSY),
+        (-POSX + P, -POSY),
     ],
 )
 
+# ----------------------------------------------------------------------------------------------------------------
+
+X = 6.0
+Y = CM4_HEIGHT / 2 - 1.25
+
+for i, (x, y) in enumerate(
+    [(X, Y), (X, -Y), (-X, Y), (-X, -Y)],
+):
+    base.cut_cylinder(
+        target=main,
+        radius=1.75,
+        depth=FULL,
+        location=(x + 12.0, y, 0.0),
+    )
 # ----------------------------------------------------------------------------------------------------------------
 
 CM4_WIDTH2 = 22.0
@@ -147,6 +131,8 @@ CM4_HEIGHT2 = CM4_HEIGHT - 12
 
 base.cut_cube(
     target=main,
-    scale=(CM4_WIDTH2, CM4_HEIGHT2, FULL),
-    location=(-CM4_WIDTH2/2+5.25, 0.0, 0.0),
+    scale=(CM4_WIDTH2, CM4_HEIGHT2, FULL * 2),
+    location=(-CM4_WIDTH2 / 2 + 5.25, 0.0, 0.0),
 )
+
+# ----------------------------------------------------------------------------------------------------------------

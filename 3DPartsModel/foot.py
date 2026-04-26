@@ -13,25 +13,6 @@ import base
 
 base.init()
 
-# depth = 2.0
-
-# main = base.create_cylinder(
-#    radius=10.0,
-#    depth=2.0,
-#    vertices=6,
-# )
-# main.rotation_euler = (0, 0, math.pi / 4)
-
-# P = 6.0
-# for i, (x, y) in enumerate([(P, 0), (-P, 0), (0, P), (0, -P)]):
-#    base.cut_cylinder(
-#        target=main,
-#        radius=1.25,
-#        depth=depth,
-#        location=(x, y, 0),
-#    )
-
-# main.rotation_euler = (0, 0, math.pi / 2)
 
 MAIN_WIDTH = 5.5
 MAIN_HEIGHT = 5.5
@@ -51,20 +32,15 @@ base.add_ring(
     inner_radius=3.5,
     depth=MAIN_DEPTH,
 )
-base.add_ring(
-    target=main,
-    outer_radius=3.5,
-    inner_radius=1.5,
-    depth=MAIN_DEPTH,
-    location=(0.0, 8.0, 0.0),
-)
-base.add_ring(
-    target=main,
-    outer_radius=3.0,
-    inner_radius=1.5,
-    depth=MAIN_DEPTH,
-    location=(0.0, -8.0, 0.0),
-)
+
+for i, (x) in enumerate([8.0, -8.0]):
+    base.add_ring(
+        target=main,
+        outer_radius=3.5,
+        inner_radius=1.5,
+        depth=MAIN_DEPTH,
+        location=(0.0, x, 0.0),
+    )
 
 
 def triangle():
@@ -75,26 +51,17 @@ def triangle():
             35.0,
         ),
     )
-    base.cut_cube(
-        target=main2,
-        scale=(
-            15.0,
-            2.0,
-            35.0 * 1.25,
-        ),
-        location=(-11.25, 0, 0),
-        rotation=(0, math.pi / 20, 0),
-    )
-    base.cut_cube(
-        target=main2,
-        scale=(
-            15.0,
-            2.0,
-            35.0 * 1.25,
-        ),
-        location=(11.25, 0, 0),
-        rotation=(0, -math.pi / 20, 0),
-    )
+    for i, (x, y) in enumerate([(-11.25, math.pi / 20), (11.25, -math.pi / 20)]):
+        base.cut_cube(
+            target=main2,
+            scale=(
+                15.0,
+                2.0,
+                35.0 * 1.25,
+            ),
+            location=(x, 0, 0),
+            rotation=(0, y, 0),
+        )
     return main2
 
 
