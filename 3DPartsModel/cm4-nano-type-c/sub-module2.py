@@ -46,43 +46,45 @@ base.cut_holes(
     positions=[(X, Y), (-X, Y), (X, -Y), (-X, -Y)],
 )
 
-## -------------------------------- 
+## --------------------------------
+Y = 47.0
+
 main2 = base.create_cube(
     scale=(
         22.0,
-        60.0,
+        Y,
         MAIN_DEPTH,
     ),
-    location=(0.0, -5.0, 0.0),
 )
 base.cut_cube(
     target=main2,
     scale=(
         8.0,
-        60.0,
+        Y,
         MAIN_DEPTH,
     ),
-    location=(0.0, -5.0, 0.0),
 )
 base.modifier_apply(obj=main2, target=main, operation="UNION")
 
-## -------------------------------- 
+## --------------------------------
 
 base.cut_cube(
     target=main,
     scale=(
         3.0,
         16.0,
-        MAIN_DEPTH*2,
+        MAIN_DEPTH * 2,
     ),
-    location=(MAIN_WIDTH/3, MAIN_HEIGHT/3, 0.0),
-    rotation = (0.0, 0.0, math.pi/4),
+    location=(MAIN_WIDTH / 3, MAIN_HEIGHT / 3, 0.0),
+    rotation=(0.0, 0.0, math.pi / 4),
 )
 
-## -------------------------------- 
+## -------------------------------- sonner
 
 M = 1.5
 ARM = 36.4
+Y = -26.0
+
 base.add_cube(
     target=main,
     scale=(
@@ -90,7 +92,7 @@ base.add_cube(
         M * 4,
         MAIN_DEPTH,
     ),
-    location=(0.0, -32.0, 0.0),
+    location=(0.0, Y, 0.0),
 )
 for i, (x) in enumerate([ARM / 2, -ARM / 2]):
     base.add_ring(
@@ -98,13 +100,13 @@ for i, (x) in enumerate([ARM / 2, -ARM / 2]):
         outer_radius=M * 2,
         inner_radius=M,
         depth=MAIN_DEPTH,
-        location=(x, -32.0, 0.0),
+        location=(x, Y, 0.0),
     )
 
 # -------------------------------- wif
 
-MAIN_WIDTH = 33.3
-MAIN_HEIGHT = 33.3
+MAIN_WIDTH = 33.1
+MAIN_HEIGHT = 33.1
 
 base.cut_cube(
     target=main,
@@ -114,7 +116,7 @@ base.cut_cube(
         MAIN_DEPTH,
     ),
     location=(0.0, 0.0, 2.0),
-    rotation = (0.0, 0.0, math.pi/4)
+    rotation=(0.0, 0.0, math.pi / 4),
 )
 
 base.cut_cylinder(
@@ -132,7 +134,7 @@ MAIN_WIDTH = 39.7
 MAIN_HEIGHT = 21.5
 MAIN_DEPTH = 10.5
 
-MAIN_THICKNESS = 2.5
+MAIN_THICKNESS = 2.0
 
 MAIN_BOTTOM = -MAIN_DEPTH / 2
 
