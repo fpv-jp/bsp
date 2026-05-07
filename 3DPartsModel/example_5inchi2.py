@@ -24,13 +24,13 @@ MAIN_DEPTH = 12.5
 main = base.create_cube(
     scale=(MAIN_WIDTH, MAIN_HEIGHT, MAIN_DEPTH),
 )
-base.add_cylinder(
-    target=main,
-    radius=22.0,
-    depth=2.0,
-    vertices=8,
-    location=(0.0, 0.0, MAIN_DEPTH/2-1.0),
-)
+#base.add_cylinder(
+#    target=main,
+#    radius=22.0,
+#    depth=3.0,
+#    vertices=8,
+#    location=(0.0, 0.0, MAIN_DEPTH/2-1.5),
+#)
 
 ##-------------------------------------
 P1 = 20.5 / 2  
@@ -93,14 +93,14 @@ base.cut_cylinder(
 
 main.rotation_euler[2] = 0
 
-P = 19.3
-M = 1.25
-for i, (x,y) in enumerate([(P,0),(-P,0),(0,P),(0,-P)]):
-    base.cut_cylinder(
-        target=main,
-        radius=M,
-        depth=2.2,
-        location=(x, y, MAIN_DEPTH/2-1.0),
-    )
+#P = 19.0
+#M = 1.25
+#for i, (x,y) in enumerate([(P,0),(-P,0),(0,P),(0,-P)]):
+#    base.cut_cylinder(
+#        target=main,
+#        radius=M,
+#        depth=MAIN_DEPTH*2,
+#        location=(x, y, 0.0),
+#    )
 
-main.rotation_euler[0] = math.pi
+#main.rotation_euler[0] = math.pi
