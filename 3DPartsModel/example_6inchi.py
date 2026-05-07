@@ -17,12 +17,12 @@ M3 = 1.75
 
 MAIN_WIDTH = 30.5 + M3 * 2
 MAIN_HEIGHT = 30.5 + M3 * 2
-MAIN_DEPTH = 5.0
+MAIN_DEPTH = 6.0
 
 
-INCH = 127
-ARM = 10.0
-MOTOR = 27.8
+INCH = 152.4
+ARM = 12.0
+MOTOR = 33.5
 
 # -------------------------------------
 main = base.create_cube(
@@ -79,8 +79,8 @@ def create_arm():
         radius=4.1,
         depth=MAIN_DEPTH * 2,
     )
-    PX = (13.5 + 18.2) / 4
-    PY = (16.5 + 21.3) / 4
+    PX = 19.0 / 2
+    PY = PX
     for i, (x, y) in enumerate([(PX, 0), (-PX, 0), (0, PY), (0, -PY)]):
         base.cut_cylinder(
             target=arm,
