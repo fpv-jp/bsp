@@ -1,5 +1,6 @@
 import bpy
 import bmesh
+import math
 
 # =============================================================================
 # Naming Convention
@@ -91,6 +92,56 @@ def cut_cylinder(target, radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), 
     """Cut a cylinder from target (DIFFERENCE)."""
     bpy.ops.mesh.primitive_cylinder_add(radius=radius, depth=depth, vertices=vertices, location=location, rotation=rotation)
     _apply_boolean(target, bpy.context.active_object, "DIFFERENCE", name)
+
+
+def create_rounded_cone(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), vertices=64, rings=24, name="Rounded_Cone"):
+    """Create a rounded tapered cone along the Z axis and return it."""
+    verts = []
+    faces = []
+
+    for ring in range(rings):
+        t = ring / rings
+        z = -depth / 2 + depth * t
+        # Smoothstep taper: wide at the base, rounded to a point at the tip.
+        smooth = t * t * (3 - 2 * t)
+        r = radius * (1 - smooth)
+
+        for i in range(vertices):
+            angle = 2 * math.pi * i / vertices
+            verts.append((r * math.cos(angle), r * math.sin(angle), z))
+
+    for ring in range(rings - 1):
+        for i in range(vertices):
+            a = ring * vertices + i
+            b = ring * vertices + (i + 1) % vertices
+            c = (ring + 1) * vertices + (i + 1) % vertices
+            d = (ring + 1) * vertices + i
+            faces.append((a, b, c, d))
+
+    top_center = len(verts)
+    verts.append((0, 0, depth / 2))
+    last_ring = (rings - 1) * vertices
+    for i in range(vertices):
+        faces.append((last_ring + i, last_ring + (i + 1) % vertices, top_center))
+
+    bottom_center = len(verts)
+    verts.append((0, 0, -depth / 2))
+    for i in range(vertices):
+        faces.append((bottom_center, i, (i + 1) % vertices))
+
+    mesh = bpy.data.meshes.new(f"{name}_Mesh")
+    mesh.from_pydata(verts, [], faces)
+    mesh.update()
+
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.location = location
+    obj.rotation_euler = rotation
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.ops.object.shade_smooth()
+    return obj
 
 
 # =============================================================================
@@ -187,6 +238,54 @@ def cut_inner_corners(target, width, height, depth, thickness):
     cut_holes(target, thickness, depth, [(x, y), (x, -y), (-x, y), (-x, -y)], z=thickness)
     cut_cube(target, (width - thickness * 2, height, depth), (0, 0, thickness))
     cut_cube(target, (width, height - thickness * 2, depth), (0, 0, thickness))
+
+
+# =============================================================================
+# Mesh Deformation
+# =============================================================================
+
+def taper(obj, top_scale=0.0, bottom_scale=1.0, segments=16, curve="cos", power=None):
+    """Taper object along Z axis by scaling vertex rings.
+    segments: number of Z subdivisions to add for smooth deformation.
+    curve: 'cos' (dome), 'linear' (cone), 'sqrt' (bullet), 'tear' (teardrop).
+    power: exponent for 'tear' curve (default 0.5, larger = smoother nose).
+    """
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+
+    # Add Z subdivisions on vertical edges
+    z_edges = [e for e in bm.edges if abs(e.verts[0].co.z - e.verts[1].co.z) > 0.001]
+    if z_edges and segments > 1:
+        bmesh.ops.subdivide_edges(bm, edges=z_edges, cuts=segments)
+
+    # Scale each vertex ring by curve
+    z_min = min(v.co.z for v in bm.verts)
+    z_max = max(v.co.z for v in bm.verts)
+    z_range = z_max - z_min
+
+    if z_range > 0:
+        for v in bm.verts:
+            t = (v.co.z - z_min) / z_range  # 0=bottom, 1=top
+            if curve == "cos":
+                factor = bottom_scale + (top_scale - bottom_scale) * (1 - math.cos(t * math.pi / 2))
+            elif curve == "tear":
+                # Teardrop: sin(π·t^p), larger p = smoother nose
+                p = power if power is not None else 0.5
+                factor = math.sin(math.pi * t ** p)
+            elif curve == "sqrt":
+                factor = bottom_scale + (top_scale - bottom_scale) * math.sqrt(t)
+            else:  # linear
+                factor = bottom_scale + (top_scale - bottom_scale) * t
+            v.co.x *= factor
+            v.co.y *= factor
+
+    # Merge overlapping vertices at tip
+    bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=0.01)
+
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+    return obj
 
 
 # =============================================================================
