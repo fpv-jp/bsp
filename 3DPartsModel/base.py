@@ -145,6 +145,60 @@ def create_rounded_cone(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), v
 
 
 # =============================================================================
+# Tear Beam (teardrop cross-section beam)
+# =============================================================================
+
+def create_tear_beam(depth, width, height, segments=32, power=0.7, location=(0, 0, 0), rotation=(0, 0, 0), name="Tear_Beam"):
+    """Create a beam with teardrop cross-section.
+    depth: beam length (Y axis).
+    width: cross-section width (X).
+    height: cross-section teardrop height (Z).
+    """
+    mesh = bpy.data.meshes.new(f"{name}_Mesh")
+    bm = bmesh.new()
+
+    # Teardrop profile in XZ plane (right half, bottom to top)
+    pts = []
+    for i in range(segments + 1):
+        t = i / segments
+        z = -height / 2 + height * t
+        x = width / 2 * math.sin(math.pi * t ** power)
+        pts.append((x, z))
+
+    # Full profile: right half + left half (mirrored)
+    profile = list(pts)
+    profile += [(-x, z) for x, z in reversed(pts[1:-1])]
+
+    n = len(profile)
+    y_front = -depth / 2
+    y_back = depth / 2
+
+    front = [bm.verts.new((x, y_front, z)) for x, z in profile]
+    back = [bm.verts.new((x, y_back, z)) for x, z in profile]
+
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new([front[i], front[j], back[j], back[i]])
+
+    bm.faces.new(list(reversed(front)))
+    bm.faces.new(back[:])
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    bm.to_mesh(mesh)
+    bm.free()
+
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.location = location
+    obj.rotation_euler = rotation
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
+# =============================================================================
 # Triangle
 # =============================================================================
 
