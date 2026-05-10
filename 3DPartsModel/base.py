@@ -297,6 +297,21 @@ def modifier_apply(obj, target, operation="UNION", name="modifier_apply"):
     _apply_boolean(target, obj, operation, name)
 
 
+def copy(obj, location=None, rotation=None, name=None):
+    """Copy an object and return the new copy."""
+    new_mesh = obj.data.copy()
+    new_obj = obj.copy()
+    new_obj.data = new_mesh
+    if name:
+        new_obj.name = name
+    if location is not None:
+        new_obj.location = location
+    if rotation is not None:
+        new_obj.rotation_euler = rotation
+    bpy.context.collection.objects.link(new_obj)
+    return new_obj
+
+
 def join(target, obj):
     """Join two objects into one."""
     bpy.context.view_layer.objects.active = target
