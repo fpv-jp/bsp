@@ -38,8 +38,18 @@ D = R * 10
 # 先端が鋭いロケット型
 #   power=0.4, peak=0.25
 
-body = base.create_cylinder_smooth(radius=R, depth=D)
-base.taper(body, segments=64, curve="tear", power=0.6, peak=0.3)
+
+body = base.create_cylinder_smooth(radius=R, depth=D/3)
+
+body1 = base.create_cylinder_smooth(radius=R, depth=D)
+base.taper(body1, segments=64, curve="tear", power=0.66)
+
+body2 = base.create_cylinder_smooth(radius=R, depth=D)
+base.taper(body2, segments=64, curve="tear", power=0.66, peak=0.66)
+
+base.modifier_apply(obj=body1, target=body, operation="UNION")
+base.modifier_apply(obj=body2, target=body, operation="UNION")
+
 
 # 内側をくり抜く（壁厚1.5mm）
 #inner = base.create_cylinder_smooth(radius=R*0.95, depth=D)
