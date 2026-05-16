@@ -32,7 +32,7 @@ WALL = 1.5  # 壁厚mm
 # --------------------------------------------
 
 # --- モーター ---
-motor1 = base.create_cylinder(radius=MOTOR_R, depth=MOTOR_D)
+motor1 = base.create_cylinder_smooth(radius=MOTOR_R, depth=MOTOR_D)
 base.taper(motor1, segments=64, curve="tear", power=0.88)
 motor1.location=(0,MOTOR_PITCH,0)
 
@@ -64,22 +64,22 @@ base.modifier_apply(obj=body2, target=body, operation="UNION")
 # --------------------------------------------
 # --- 中空化 ---------------------------------
 # --------------------------------------------
-inner = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D/3-8)
+body_inner = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D/3-8)
 
-inner1 = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D)
-base.taper(inner1, segments=64, curve="tear", power=0.66)
-inner2 = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D)
-base.taper(inner2, segments=64, curve="tear", power=0.66, peak=0.66)
+body_inner1 = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D)
+base.taper(body_inner1, segments=64, curve="tear", power=0.66)
+body_inner2 = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D)
+base.taper(body_inner2, segments=64, curve="tear", power=0.66, peak=0.66)
 
 arm_inner = base.create_tear_beam(depth=INCH, width=ARM_W-WALL*2, height=ARM_W*3-WALL*2, power=0.75)
 arm_inner2 = base.copy(arm_inner, rotation=(0, 0, math.pi / 2))
 
-base.modifier_apply(obj=inner1,    target=inner, operation="UNION")
-base.modifier_apply(obj=inner2,    target=inner, operation="UNION")
-base.modifier_apply(obj=arm_inner, target=inner, operation="UNION")
-base.modifier_apply(obj=arm_inner2, target=inner, operation="UNION")
-base.modifier_apply(obj=inner,     target=body,  operation="DIFFERENCE")
+base.modifier_apply(obj=body_inner1, target=body_inner, operation="UNION")
+base.modifier_apply(obj=body_inner2, target=body_inner, operation="UNION")
+base.modifier_apply(obj=arm_inner,   target=body_inner, operation="UNION")
+base.modifier_apply(obj=arm_inner2,  target=body_inner, operation="UNION")
+base.modifier_apply(obj=body_inner,  target=body,  operation="DIFFERENCE")
 
-# --- 前面カット ---
-base.cut_cube(target=body, scale=(500, 500, 500), location=(0, -250, 0))
-
+# --- 確認のため前面カット ---
+test = base.create_cube(scale=(400, 400, 400), location=(0, -200, 0))
+base.modifier_apply(obj=test, target=body, operation="DIFFERENCE")
