@@ -12,157 +12,31 @@ sys.modules[module_name] = module
 import base
 
 base.init()
+R = 35.0
+D = R * 10
 
-# BODY_R = 22.5
-BODY_R = 30.5 / 2
+segments=64
+curve="tear"
+power=0.60
 
-## -------------------------------------
+body = base.create_cylinder_smooth(radius=R, depth=D)
+base.taper(body, segments=segments, curve=curve, power=power)
 
-MAIN_DEPTH = 3.0
+# 内側をくり抜く（壁厚1.5mm）
+inner = base.create_cylinder_smooth(radius=R*0.95, depth=D)
+base.taper(inner, segments=segments, curve=curve, power=power)
+base.modifier_apply(inner, body, operation="DIFFERENCE")
 
-body = base.create_cube(
-    scale=(30.5, 30.5, MAIN_DEPTH),
-    rotation=(0, 0, math.pi / 4),
+
+INCH = 12 * 25.4  # 6inch
+
+arm_width = 14.5
+arm_height = arm_width*3
+arm_power = 0.75
+
+arm = base.create_tear_beam(
+    depth=INCH,  # ビームの長さ（Y軸）
+    width=arm_width,  # 断面の幅（X）
+    height=arm_height,  # 断面の涙型の高さ（Z）
+    power=arm_power,
 )
-
-M3 = 1.75
-
-base.cut_cylinder(
-    target=body,
-    radius=M3,
-    depth=MAIN_DEPTH * 2,
-)
-
-FC_PITCH = 30.5 / 2
-
-for i, (x, y) in enumerate([(FC_PITCH, 0), (-FC_PITCH, 0), (0, FC_PITCH), (0, -FC_PITCH)]):
-    base.add_ring(
-        target=body,
-        outer_radius=6.0,
-        inner_radius=M3,
-        depth=MAIN_DEPTH,
-        location=(x, y, 0.0),
-    )
-## -------------------------------------
-
-H = 5.0 / 2 + MAIN_DEPTH / 2
-body.location = (0.0, 0.0, H)
-
-## -------------------------------------
-## -------------------------------------
-## -------------------------------------
-
-INCH = 152.4
-
-CCC = 1.39
-MAIN_DEPTH = 5.0
-main = base.create_cube(
-    scale=(INCH / CCC, 12.0, MAIN_DEPTH),
-    location=(INCH / CCC / 2, 0.0, 0.0),
-)
-# ------------------------
-MOTOR = 37.5
-base.add_cylinder(
-    target=main,
-    radius=MOTOR / 2,
-    #    radius=INCH/2,
-    depth=MAIN_DEPTH,
-    vertices=6,
-    rotation=(0, 0, math.pi / 6),
-)
-base.cut_cylinder(
-    target=main,
-    radius=5.1,
-    depth=MAIN_DEPTH * 2,
-)
-# ------------------------
-MOTOR_PITCH = 19.0 / 2
-M3 = 1.75
-
-main.rotation_euler[2] = math.pi / 4
-for i, (x, y) in enumerate(
-    [(MOTOR_PITCH, 0), (-MOTOR_PITCH, 0), (0, MOTOR_PITCH), (0, -MOTOR_PITCH)]
-):
-    base.cut_cylinder(
-        target=main,
-        radius=M3,
-        depth=MAIN_DEPTH * 2,
-        location=(x, y, 0.0),
-    )
-main.rotation_euler[2] = 0
-# ------------------------
-
-
-main.location = (-INCH / CCC, 0.0, 0.0)
-# M3 = 1.75
-FC = 30.5 / 2
-
-base.cut_cylinder(
-    target=main,
-    radius=M3,
-    depth=MAIN_DEPTH * 2,
-    location=(-FC, 0.0, 0.0),
-)
-base.cut_cylinder(
-    target=main,
-    radius=M3,
-    depth=MAIN_DEPTH * 2,
-)
-
-# -------------------------------------
-
-MAX = 95 / 8
-scale = (400.0, 400.0, MAIN_DEPTH * 2)
-LX = 200.0
-base.cut_cube(
-    target=main,
-    scale=scale,
-    location=(0.0, LX + MAX, 0.0),
-)
-base.cut_cube(
-    target=main,
-    scale=scale,
-    location=(0.0, -LX - MAX, 0.0),
-)
-base.cut_cube(
-    target=main,
-    scale=scale,
-    rotation=(0, 0, math.pi / 4),
-    location=(0.0, LX * 1.41421, 0.0),
-)
-
-base.cut_cube(
-    target=main,
-    scale=scale,
-    rotation=(0, 0, math.pi / 4),
-    location=(0.0, -LX * 1.41421, 0.0),
-)
-
-# -------------------------------------
-
-main2 = base.copy(main, location=(INCH / CCC, 0, 0))
-main2.rotation_euler[2] = math.pi
-
-main3 = base.copy(main, location=(0, -INCH / CCC, 0))
-main3.rotation_euler[2] = math.pi / 2
-
-main4 = base.copy(main, location=(0, INCH / CCC, 0))
-main4.rotation_euler[2] = -math.pi / 2
-
-# -------------------------------------
-
-# CCC=INCH/CCC/2.45
-# MAX=MAX*.85
-# main2 = base.copy(main, location=(CCC, -MAX, 0))
-# main2.rotation_euler[2] = math.pi
-
-# main3 = base.copy(main, location=(-CCC, MAX, 0))
-
-# main4 = base.copy(main, location=(CCC, MAX*3, 0))
-# main4.rotation_euler[2] = math.pi
-
-# main.location=(-CCC, -MAX*3, 0)
-
-# cfrp = base.create_cube(
-#    scale=(135, 85, MAIN_DEPTH/2),
-# )

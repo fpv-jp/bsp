@@ -82,6 +82,13 @@ def create_cylinder(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), verti
     return obj
 
 
+def create_cylinder_smooth(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), vertices=32, name="Cylinder"):
+    """Create a cylinder with smooth shading and return it."""
+    obj = create_cylinder(radius, depth, location=location, rotation=rotation, vertices=vertices, name=name)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
 def add_cylinder(target, radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), vertices=32, name="add_cylinder"):
     """Add a cylinder to target (UNION)."""
     bpy.ops.mesh.primitive_cylinder_add(radius=radius, depth=depth, vertices=vertices, location=location, rotation=rotation)
@@ -298,11 +305,12 @@ def cut_inner_corners(target, width, height, depth, thickness):
 # Mesh Deformation
 # =============================================================================
 
-def taper(obj, top_scale=0.0, bottom_scale=1.0, segments=16, curve="cos", power=None):
+def taper(obj, top_scale=0.0, bottom_scale=1.0, segments=16, curve="cos", power=None, peak=0.35):
     """Taper object along Z axis by scaling vertex rings.
     segments: number of Z subdivisions to add for smooth deformation.
     curve: 'cos' (dome), 'linear' (cone), 'sqrt' (bullet), 'tear' (teardrop).
     power: exponent for 'tear' curve (default 0.5, larger = smoother nose).
+    peak: position of widest point for 'tear' curve, 0=bottom 1=top (default 0.35).
     """
     bm = bmesh.new()
     bm.from_mesh(obj.data)
@@ -323,9 +331,11 @@ def taper(obj, top_scale=0.0, bottom_scale=1.0, segments=16, curve="cos", power=
             if curve == "cos":
                 factor = bottom_scale + (top_scale - bottom_scale) * (1 - math.cos(t * math.pi / 2))
             elif curve == "tear":
-                # Teardrop: sin(π·t^p), larger p = smoother nose
                 p = power if power is not None else 0.5
-                factor = math.sin(math.pi * t ** p)
+                if t < peak:
+                    factor = math.sin(math.pi / 2 * (t / peak) ** p)
+                else:
+                    factor = math.cos(math.pi / 2 * ((t - peak) / (1 - peak)) ** p)
             elif curve == "sqrt":
                 factor = bottom_scale + (top_scale - bottom_scale) * math.sqrt(t)
             else:  # linear

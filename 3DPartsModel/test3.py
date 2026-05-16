@@ -40,7 +40,7 @@ def create_arm():
         power=arm_power,
     )
     base.modifier_apply(inner, arm, operation="DIFFERENCE")
-    base.cut_cube(
+    base.add_cube(
         target=arm,
         scale=(12.0, INCH, 5.0),
         location=(0, 0, -3.9),
@@ -81,12 +81,12 @@ def create_motor():
         location=(0, 0, 50*0.75),
     )
     
-    # 中身を確認するために透過
-    base.cut_cube(
-        target=motor,
-        scale=(50, 50, 250),
-        location=(0, -25, 0),
-    )
+#    # 中身を確認するために透過
+#    base.cut_cube(
+#        target=motor,
+#        scale=(50, 50, 250),
+#        location=(0, -25, 0),
+#    )
 
     # dummy --------------------------------
 #    dummy = create_dummy()
@@ -97,8 +97,8 @@ def create_motor():
 
 
 
-motor1 = create_motor()
-motor1.location = (0, -MOTOR_X, 0)
+#motor1 = create_motor()
+#motor1.location = (0, -MOTOR_X, -12)
 
 #motor2 = create_motor()
 #motor2.location = (MOTOR_X, 0, 0)
@@ -115,11 +115,15 @@ motor1.location = (0, -MOTOR_X, 0)
 ## body ----------------------------------------
 
 # 涙型の流線型ボディ
-R = 33.0
+R = 35.0
 D = R * 10
 
+segments=64
+curve="tear"
+power=0.60
+
 body = base.create_cylinder(radius=R, depth=D)
-base.taper(body, segments=64, curve="tear", power=0.60)
+base.taper(body, segments=segments, curve=curve, power=power)
 
 ## arm attach
 #base.modifier_apply(obj=arm1, target=body, operation="UNION")
@@ -128,24 +132,49 @@ base.taper(body, segments=64, curve="tear", power=0.60)
 ##base.modifier_apply(obj=arm4, target=body, operation="UNION")
 
 # 内側をくり抜く（壁厚1.5mm）
-inner = base.create_cylinder(radius=R*0.97, depth=D*0.97)
-base.taper(inner, segments=64, curve="tear", power=0.60)
+inner = base.create_cylinder(radius=R*0.95, depth=D)
+base.taper(inner, segments=segments, curve=curve, power=power)
 base.modifier_apply(inner, body, operation="DIFFERENCE")
 
 # 無駄な底辺をカット
-base.cut_cube(
-    target=body,
-    scale=(100, 100, 500),
-    location=(0, 0, 320),
-)
+#base.cut_cube(
+#    target=body,
+#    scale=(100, 100, 500),
+#    location=(0, 0, 280),
+#)
 
+#body.rotation_euler[0] = math.pi
+
+#body.location = (0, 0, -30)
+
+### ----------------------------------------
+#battery_x = 37
+#battery_y = 35
+#battery_z = 66
+
+### パターン1
+#base.add_cube(
+#    target=body,
+#    scale=(battery_x, battery_y, battery_z),
+#    location = (0, 0, -90)
+#)
+#base.add_cube(
+#    target=body,
+#    scale=(battery_x, battery_y, battery_z),
+#    location = (0, 0, -battery_z/2-5)
+#)
+#base.add_cube(
+#    target=body,
+#    scale=(43, 43, 20),
+#    location = (0, 0, -6)
+#)
 
 ### ----------------------------------------
 
 # 中身を確認するために透過
-base.cut_cube(
-    target=body,
-    scale=(80, 40, 500),
-    location=(0, -20, 0),
-)
+#base.cut_cube(
+#    target=body,
+#    scale=(200, 200, 500),
+#    location=(0, -100, 0),
+#)
 
