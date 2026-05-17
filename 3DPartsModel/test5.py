@@ -38,24 +38,24 @@ FC_PITCH = 30.5 / 2
 motor = base.create_cube(scale=(MOTOR_PITCH * 2.08, MOTOR_PITCH * 2.08, MAIN_DEPTH))
 
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#PROP_INCH = 6 * 25.4  # 6inch
-#PROP_DEPTH = 9.0
+PROP_INCH = 6 * 25.4  # 6inch
+PROP_DEPTH = 9.0
 
-#MOTOR_SIZE = 40.7
-#MOTOR_DEPTH = 40.8 - 15.9
+MOTOR_SIZE = 40.7
+MOTOR_DEPTH = 40.8 - 15.9
 
-#base.add_cylinder(
-#    target=motor,
-#    radius=MOTOR_SIZE / 2,
-#    depth=MOTOR_DEPTH,
-#    location=(0.0, 0.0, (MAIN_DEPTH + MOTOR_DEPTH) / 2),
-#)
-#base.add_cylinder(
-#    target=motor,
-#    radius=PROP_INCH / 2,
-#    depth=PROP_DEPTH,
-#    location=(0.0, 0.0, (MAIN_DEPTH + PROP_DEPTH) / 2 + MOTOR_DEPTH),
-#)
+base.add_cylinder(
+    target=motor,
+    radius=MOTOR_SIZE / 2,
+    depth=MOTOR_DEPTH,
+    location=(0.0, 0.0, -(MAIN_DEPTH + MOTOR_DEPTH) / 2),
+)
+base.add_cylinder(
+    target=motor,
+    radius=PROP_INCH / 2,
+    depth=PROP_DEPTH,
+    location=(0.0, 0.0, -(MAIN_DEPTH + PROP_DEPTH) / 2 - MOTOR_DEPTH),
+)
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # 腕
@@ -147,9 +147,14 @@ body2 = base.copy(body, location=(0.0, 0.0, -3.0 - 1.5))
 battery = base.create_cube(scale=(40, 40, 70))
 battery1 = base.copy(battery)
 fc = base.create_cube(scale=(42, 42, 10))
-esc = base.create_cube(scale=(60, 60, 10))
+# esc = base.create_cube(scale=(60, 60, 10))
+esc = base.create_cube(scale=(42, 42, 10))
 
 battery.location = (0.0, 0.0, 120.0)
 battery1.location = (0.0, 0.0, 45.0)
 fc.location = (0.0, 0.0, -12.0)
 esc.location = (0.0, 0.0, -23.0)
+
+# --- 全オブジェクトをZ軸に55移動 ---
+for obj in bpy.context.scene.objects:
+    obj.location.z += 55
