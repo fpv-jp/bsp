@@ -14,9 +14,6 @@ import base
 base.init()
 
 
-
-
-
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
 INCH = 6 * 25.4 * adjustment  # 6inch
@@ -41,24 +38,24 @@ FC_PITCH = 30.5 / 2
 motor = base.create_cube(scale=(MOTOR_PITCH * 2.08, MOTOR_PITCH * 2.08, MAIN_DEPTH))
 
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-PROP_INCH = 6 * 25.4  # 6inch
-PROP_DEPTH = 9.0
+#PROP_INCH = 6 * 25.4  # 6inch
+#PROP_DEPTH = 9.0
 
-MOTOR_SIZE = 40.7
-MOTOR_DEPTH = 40.8 - 15.9
+#MOTOR_SIZE = 40.7
+#MOTOR_DEPTH = 40.8 - 15.9
 
-base.add_cylinder(
-    target=motor,
-    radius=MOTOR_SIZE / 2,
-    depth=MOTOR_DEPTH,
-    location=(0.0, 0.0, (MAIN_DEPTH + MOTOR_DEPTH) / 2),
-)
-base.add_cylinder(
-    target=motor,
-    radius=PROP_INCH / 2,
-    depth=PROP_DEPTH,
-    location=(0.0, 0.0, (MAIN_DEPTH + PROP_DEPTH) / 2 + MOTOR_DEPTH)
-)
+#base.add_cylinder(
+#    target=motor,
+#    radius=MOTOR_SIZE / 2,
+#    depth=MOTOR_DEPTH,
+#    location=(0.0, 0.0, (MAIN_DEPTH + MOTOR_DEPTH) / 2),
+#)
+#base.add_cylinder(
+#    target=motor,
+#    radius=PROP_INCH / 2,
+#    depth=PROP_DEPTH,
+#    location=(0.0, 0.0, (MAIN_DEPTH + PROP_DEPTH) / 2 + MOTOR_DEPTH),
+#)
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # 腕
@@ -101,8 +98,8 @@ base.cut_cylinder(
 motor.rotation_euler[2] = 0
 
 # 中心を戻す(step出力用)----------------------------
-motor.location = (0.0, ARM_L / 2, 0.0)
-base.set_origin(motor, (0.0, 0.0, 0.0))  # 回転の起点をシーンの(0,0,0)に設定
+##motor.location = (0.0, ARM_L / 2, 0.0)
+##base.set_origin(motor, (0.0, 0.0, 0.0))  # 回転の起点をシーンの(0,0,0)に設定
 
 # 他の腕を複製----------------------------
 motor2 = base.copy(motor, rotation=(0, 0, math.pi / 2))
@@ -142,3 +139,17 @@ body.rotation_euler[2] = math.pi / 4
 
 ## 底板を複製----------------------------
 body2 = base.copy(body, location=(0.0, 0.0, -3.0 - 1.5))
+
+### ------------------------------------------------------------------------------------
+### 参考
+### ------------------------------------------------------------------------------------
+
+battery = base.create_cube(scale=(40, 40, 70))
+battery1 = base.copy(battery)
+fc = base.create_cube(scale=(42, 42, 10))
+esc = base.create_cube(scale=(60, 60, 10))
+
+battery.location = (0.0, 0.0, 120.0)
+battery1.location = (0.0, 0.0, 45.0)
+fc.location = (0.0, 0.0, -12.0)
+esc.location = (0.0, 0.0, -23.0)

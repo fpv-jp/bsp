@@ -13,7 +13,7 @@ import base
 
 base.init()
 
-adjustment = 1.47 # アームの長さ/モータ位置を調整する倍率
+adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
 INCH = 6 * 25.4 * adjustment  # 6inch
 
@@ -29,64 +29,77 @@ BODY_D = BODY_R * 10
 
 WALL = 1.5  # 壁厚mm
 
+TEST_CUT = True
+
+def create_motor(sharpen):
+    # --- モータ ---
+    motor = base.create_cylinder_smooth(radius=MOTOR_R - sharpen, depth=MOTOR_D)
+    base.taper(motor, segments=32, curve="tear", power=0.88)
+    motor.location = (0, MOTOR_PITCH, 15)
+    return motor
+
+
+def create_arm_motor(sharpen):
+    # --- モータ ---
+    motor1 = create_motor(sharpen)
+    motor2 = base.copy(motor1, location=(0, -MOTOR_PITCH, 0))
+
+    # --- 腕 ---
+    arm = base.create_tear_beam(depth=INCH, width=ARM_W - sharpen * 2, height=ARM_W * 3 - sharpen * 2, power=0.75)
+
+    # --- 腕にモータを結合 ---
+    base.modifier_apply(obj=motor1, target=arm, operation="UNION")
+    base.modifier_apply(obj=motor2, target=arm, operation="UNION")
+    return arm
+
+
+def create_body(sharpen):
+    # --- 胴体 中央 ---
+    body = base.create_cylinder_smooth(radius=BODY_R - sharpen, depth=BODY_D / 3 - 8)
+
+    # --- 胴体 上部 ---
+    body_top = base.create_tear_body(radius=BODY_R - sharpen, depth=BODY_D, power=0.66)
+
+    # --- 胴体 下部 ---
+    body_bottom = base.create_tear_body(radius=BODY_R - sharpen, depth=BODY_D, power=0.66, peak=0.66)
+
+    # --- 胴体結合 ---
+    base.modifier_apply(obj=body_top, target=body, operation="UNION")
+    base.modifier_apply(obj=body_bottom, target=body, operation="UNION")
+    return body
+
+
 # --------------------------------------------
 # --- 外形 -----------------------------------
 # --------------------------------------------
 
-# --- モーター ---
-motor1 = base.create_cylinder_smooth(radius=MOTOR_R, depth=MOTOR_D)
-base.taper(motor1, segments=32, curve="tear", power=0.88)
-motor1.location=(0,MOTOR_PITCH,0)
+armY = create_arm_motor(0)
+armY.location = (0.0, 0.0, 35)
 
-motor2 = base.copy(motor1, location=(0, -MOTOR_PITCH, 0))
-
-# --- 腕 ---
-arm1 = base.create_tear_beam(depth=INCH, width=ARM_W, height=ARM_W*3, power=0.75)
-
-base.modifier_apply(obj=motor1, target=arm1, operation="UNION")
-base.modifier_apply(obj=motor2, target=arm1, operation="UNION")
-
-arm2 = base.copy(arm1, rotation=(0, 0, math.pi / 2))
-
-# --- 胴体 ---
-body = base.create_cylinder_smooth(radius=BODY_R, depth=BODY_D/3-8) # 中央
-
-body1 = base.create_tear_body(radius=BODY_R, depth=BODY_D, power=0.66) # 上部
-body2 = base.create_tear_body(radius=BODY_R, depth=BODY_D, power=0.66, peak=0.66) # 下部
+armX = base.copy(armY, rotation=(0, 0, math.pi / 2))
 
 # --- 外形結合 ---
-base.modifier_apply(obj=arm1, target=body, operation="UNION")
-base.modifier_apply(obj=arm2, target=body, operation="UNION")
-base.modifier_apply(obj=body1, target=body, operation="UNION")
-base.modifier_apply(obj=body2, target=body, operation="UNION")
+body = create_body(0)
+base.modifier_apply(obj=armY, target=body, operation="UNION")
+base.modifier_apply(obj=armX, target=body, operation="UNION")
 
 # --------------------------------------------
 # --- 中空化 ---------------------------------
 # --------------------------------------------
-#body_inner = base.create_cylinder_smooth(radius=BODY_R-WALL, depth=BODY_D/3-8)
-#body_inner1 = base.create_tear_body(radius=BODY_R-WALL, depth=BODY_D, power=0.66)
-#body_inner2 = base.create_tear_body(radius=BODY_R-WALL, depth=BODY_D, power=0.66, peak=0.66)
+armY_inner = create_arm_motor(WALL)
+armY_inner.location = (0.0, 0.0, 35)
 
-#arm_inner = base.create_tear_beam(depth=INCH, width=ARM_W-WALL*2, height=ARM_W*3-WALL*2, power=0.75)
-#arm_inner2 = base.copy(arm_inner, rotation=(0, 0, math.pi / 2))
+armX_inner = base.copy(armY_inner, rotation=(0, 0, math.pi / 2))
 
-#base.modifier_apply(obj=body_inner1, target=body_inner, operation="UNION")
-#base.modifier_apply(obj=body_inner2, target=body_inner, operation="UNION")
-#base.modifier_apply(obj=arm_inner,   target=body_inner, operation="UNION")
-#base.modifier_apply(obj=arm_inner2,  target=body_inner, operation="UNION")
-
-## --- 確認のため前面カット ---
-#test = base.create_cube(scale=(400, 400, 400), location=(0, -200, 0))
-#base.modifier_apply(obj=test,  target=body_inner, operation="UNION")
-
-#base.modifier_apply(obj=body_inner,  target=body,  operation="DIFFERENCE")
+# ---内形結合 ---
+body_inner = create_body(WALL)
+base.modifier_apply(obj=armY_inner, target=body_inner, operation="UNION")
+base.modifier_apply(obj=armX_inner, target=body_inner, operation="UNION")
 
 # --- 確認のため前面カット ---
-#test = base.create_cube(scale=(400, 400, 400), location=(0, -200, 0))
-#base.modifier_apply(obj=test, target=body, operation="DIFFERENCE")
+if TEST_CUT:
+    test = base.create_cube(scale=(300, 300, 400), location=(0, -150, 0))
+    base.modifier_apply(obj=test, target=body_inner, operation="UNION")
 
-# ------------------------
-test = base.create_cube(scale=(400, 400, 400), location=(0, 0, 200))
-base.modifier_apply(obj=test,  target=body, operation="DIFFERENCE")
-body.rotation_euler[0] = math.pi
-body.rotation_euler[2] = math.pi / 4
+# ---中空化 ---
+base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
