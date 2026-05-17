@@ -76,7 +76,7 @@ def create_body(sharpen):
     body_bottom = base.create_tear_body(radius=BODY_R - sharpen, depth=BODY_D, power=0.66, peak=0.75, smooth=False)
     if sharpen > 0:
         base.add_cylinder(
-            target=body_bottom, radius=BODY_R, depth=100, location=(0.0, 0.0, BODY_D / 2)
+            target=body_bottom, radius=BODY_R, depth=100, location=(0.0, 0.0, BODY_D / 1.9)
         )
 
     # --- 胴体結合 ---
