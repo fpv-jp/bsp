@@ -13,6 +13,10 @@ import base
 
 base.init()
 
+
+
+
+
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
 INCH = 6 * 25.4 * adjustment  # 6inch
@@ -20,7 +24,6 @@ INCH = 6 * 25.4 * adjustment  # 6inch
 ARM_L = INCH / 2
 ARM_W = 12.0
 
-MOTOR_SIZE = 37.5
 MOTOR_PITCH = 19.0 / 2
 
 MAIN_DEPTH = 6.0
@@ -30,12 +33,33 @@ M5 = 5.0
 
 FC_PITCH = 30.5 / 2
 
-# ------------------------------------------------------------------------------------
-# モータ・腕
-# ------------------------------------------------------------------------------------
+### ------------------------------------------------------------------------------------
+### モータ・腕
+### ------------------------------------------------------------------------------------
 
 # モータ
 motor = base.create_cube(scale=(MOTOR_PITCH * 2.08, MOTOR_PITCH * 2.08, MAIN_DEPTH))
+
+# 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+PROP_INCH = 6 * 25.4  # 6inch
+PROP_DEPTH = 9.0
+
+MOTOR_SIZE = 40.7
+MOTOR_DEPTH = 40.8 - 15.9
+
+base.add_cylinder(
+    target=motor,
+    radius=MOTOR_SIZE / 2,
+    depth=MOTOR_DEPTH,
+    location=(0.0, 0.0, (MAIN_DEPTH + MOTOR_DEPTH) / 2),
+)
+base.add_cylinder(
+    target=motor,
+    radius=PROP_INCH / 2,
+    depth=PROP_DEPTH,
+    location=(0.0, 0.0, (MAIN_DEPTH + PROP_DEPTH) / 2 + MOTOR_DEPTH)
+)
+# 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # 腕
 base.add_cube(target=motor, scale=(ARM_W, ARM_L, MAIN_DEPTH), location=(0.0, ARM_L / 2, 0.0))
@@ -77,17 +101,17 @@ base.cut_cylinder(
 motor.rotation_euler[2] = 0
 
 # 中心を戻す(step出力用)----------------------------
-#motor.location = (0.0, ARM_L / 2, 0.0)
-#base.set_origin(motor, (0.0, 0.0, 0.0))  # 回転の起点をシーンの(0,0,0)に設定
+motor.location = (0.0, ARM_L / 2, 0.0)
+base.set_origin(motor, (0.0, 0.0, 0.0))  # 回転の起点をシーンの(0,0,0)に設定
 
 # 他の腕を複製----------------------------
 motor2 = base.copy(motor, rotation=(0, 0, math.pi / 2))
 motor3 = base.copy(motor, rotation=(0, 0, math.pi))
 motor4 = base.copy(motor, rotation=(0, 0, -math.pi / 2))
 
-## ------------------------------------------------------------------------------------
-## 胴体
-## ------------------------------------------------------------------------------------
+### ------------------------------------------------------------------------------------
+### 胴体
+### ------------------------------------------------------------------------------------
 MAIN_DEPTH = 3.0
 
 # 天板----------------------------
@@ -117,4 +141,4 @@ body.location = (0.0, 0.0, 3.0 + 1.5)
 body.rotation_euler[2] = math.pi / 4
 
 ## 底板を複製----------------------------
-body2 = base.copy(body, location=(0.0, 0.0, - 3.0 - 1.5))
+body2 = base.copy(body, location=(0.0, 0.0, -3.0 - 1.5))
