@@ -82,7 +82,7 @@ def create_cylinder(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), verti
     return obj
 
 
-def create_cylinder_smooth(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), vertices=32, name="Cylinder"):
+def create_cylinder_smooth(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), vertices=64, name="Cylinder"):
     """Create a cylinder with smooth shading and return it."""
     obj = create_cylinder(radius, depth, location=location, rotation=rotation, vertices=vertices, name=name)
     bpy.ops.object.shade_smooth()
@@ -139,6 +139,73 @@ def create_rounded_cone(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), v
     mesh = bpy.data.meshes.new(f"{name}_Mesh")
     mesh.from_pydata(verts, [], faces)
     mesh.update()
+
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.location = location
+    obj.rotation_euler = rotation
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
+# =============================================================================
+# Tear Body (teardrop body of revolution, smooth poles)
+# =============================================================================
+
+def create_tear_body(radius, depth, vertices=64, segments=64, power=0.66, peak=0.35,
+                     location=(0, 0, 0), rotation=(0, 0, 0), name="Tear_Body"):
+    """Create a teardrop body of revolution with smooth poles.
+    Uses cosine ring spacing (dense near tips) to avoid pole faceting.
+    power: sharpness of tips.
+    peak: widest point position, 0=bottom 1=top (default 0.35).
+    """
+    mesh = bpy.data.meshes.new(f"{name}_Mesh")
+    bm = bmesh.new()
+
+    def profile_r(t):
+        if t <= 0.0 or t >= 1.0:
+            return 0.0
+        p = power
+        if t < peak:
+            return radius * math.sin(math.pi / 2 * (t / peak) ** p)
+        else:
+            return radius * math.cos(math.pi / 2 * ((t - peak) / (1 - peak)) ** p)
+
+    # Cosine-spaced t values: dense near poles (t=0 and t=1)
+    rings = []
+    for i in range(segments + 1):
+        t = 0.5 - 0.5 * math.cos(math.pi * i / segments)
+        r = profile_r(t)
+        z = -depth / 2 + depth * t
+        if r < 0.01:
+            rings.append([bm.verts.new((0.0, 0.0, z))])
+        else:
+            ring = []
+            for j in range(vertices):
+                angle = 2 * math.pi * j / vertices
+                ring.append(bm.verts.new((r * math.cos(angle), r * math.sin(angle), z)))
+            rings.append(ring)
+
+    # Connect consecutive rings
+    for i in range(len(rings) - 1):
+        r0, r1 = rings[i], rings[i + 1]
+        n0, n1 = len(r0), len(r1)
+        if n0 == 1 and n1 > 1:
+            for j in range(n1):
+                bm.faces.new([r0[0], r1[(j + 1) % n1], r1[j]])
+        elif n0 > 1 and n1 == 1:
+            for j in range(n0):
+                bm.faces.new([r0[j], r0[(j + 1) % n0], r1[0]])
+        else:
+            for j in range(n0):
+                bm.faces.new([r0[j], r1[j], r1[(j + 1) % n1], r0[(j + 1) % n0]])
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    bm.to_mesh(mesh)
+    bm.free()
 
     obj = bpy.data.objects.new(name, mesh)
     bpy.context.collection.objects.link(obj)
