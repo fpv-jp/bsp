@@ -428,6 +428,16 @@ def modifier_apply(obj, target, operation="UNION", name="modifier_apply"):
     _apply_boolean(target, obj, operation, name)
 
 
+def set_origin(obj, point=(0.0, 0.0, 0.0)):
+    """Set object origin to a specific world point, so rotations use that point as pivot."""
+    bpy.context.scene.cursor.location = point
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.ops.object.origin_set(type="ORIGIN_CURSOR")
+    bpy.context.scene.cursor.location = (0.0, 0.0, 0.0)
+
+
 def copy(obj, location=None, rotation=None, name=None):
     """Copy an object and return the new copy."""
     new_mesh = obj.data.copy()

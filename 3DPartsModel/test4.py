@@ -17,7 +17,7 @@ adjustment = 1.47 # アームの長さ/モータ位置を調整する倍率
 
 INCH = 6 * 25.4 * adjustment  # 6inch
 
-MOTOR_PITCH = INCH / 2 #* 1.47
+MOTOR_PITCH = INCH / 2
 
 ARM_W = 14.5
 
