@@ -156,7 +156,7 @@ def create_rounded_cone(radius, depth, location=(0, 0, 0), rotation=(0, 0, 0), v
 # =============================================================================
 
 def create_tear_body(radius, depth, vertices=64, segments=64, power=0.66, peak=0.35,
-                     location=(0, 0, 0), rotation=(0, 0, 0), name="Tear_Body"):
+                     location=(0, 0, 0), rotation=(0, 0, 0), smooth=True, name="Tear_Body"):
     """Create a teardrop body of revolution with smooth poles.
     Uses cosine ring spacing (dense near tips) to avoid pole faceting.
     power: sharpness of tips.
@@ -214,7 +214,8 @@ def create_tear_body(radius, depth, vertices=64, segments=64, power=0.66, peak=0
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.select_all(action="DESELECT")
     obj.select_set(True)
-    bpy.ops.object.shade_smooth()
+    if smooth:
+        bpy.ops.object.shade_smooth()
     return obj
 
 

@@ -50,15 +50,15 @@ def create_arm_motor(sharpen):
 
     # --- モータ ---
     motor1 = create_motor(sharpen)
-    motor1.location = (0, MOTOR_PITCH, 15)
+    motor1.location = (0, MOTOR_PITCH, 0)
     motor2 = create_motor(sharpen)
-    motor2.location = (0, -MOTOR_PITCH, 15)
-
+    motor2.location = (0, -MOTOR_PITCH, 0)
+    
+    arm.location = (0.0, 0.0, -15)
+    
     # --- 腕にモータを結合 ---
     base.modifier_apply(obj=motor1, target=arm, operation="UNION")
     base.modifier_apply(obj=motor2, target=arm, operation="UNION")
-
-    arm.location = (0.0, 0.0, 70)
 
     arm2 = base.copy(arm, rotation=(0, 0, math.pi / 2))
     base.modifier_apply(obj=arm2, target=arm, operation="UNION")
@@ -67,15 +67,13 @@ def create_arm_motor(sharpen):
 
 def create_body(sharpen):
     # --- 胴体 中央 ---
-    body = base.create_cylinder_smooth(radius=BODY_R - sharpen, depth=BODY_D / 2.5)
+    body = base.create_cylinder(radius=BODY_R - sharpen, depth=BODY_D / 2.5, location=(0.0,0.0,11.0), vertices=64)
 
     # --- 胴体 上部 ---
-    body_top = base.create_tear_body(radius=BODY_R - sharpen, depth=BODY_D, power=0.66)
+    body_top = base.create_tear_body(radius=BODY_R - sharpen, depth=BODY_D, power=0.66, smooth=False)
 
     # --- 胴体 下部 ---
-    body_bottom = base.create_tear_body(
-        radius=BODY_R - sharpen, depth=BODY_D, power=0.66, peak=0.75
-    )
+    body_bottom = base.create_tear_body(radius=BODY_R - sharpen, depth=BODY_D, power=0.66, peak=0.75, smooth=False)
     if sharpen > 0:
         base.add_cylinder(
             target=body_bottom, radius=BODY_R, depth=100, location=(0.0, 0.0, BODY_D / 2)
@@ -95,6 +93,7 @@ def create_body(sharpen):
 # --- 外形結合 ---
 body = create_body(0)
 arm = create_arm_motor(0)
+arm.location = (0.0, 0.0, 80)
 base.modifier_apply(obj=arm, target=body, operation="UNION")
 
 # --------------------------------------------
@@ -104,6 +103,7 @@ base.modifier_apply(obj=arm, target=body, operation="UNION")
 # ---内形結合 ---
 body_inner = create_body(WALL)
 arm_inner = create_arm_motor(WALL)
+arm_inner.location = (0.0, 0.0, 80)
 base.modifier_apply(obj=arm_inner, target=body_inner, operation="UNION")
 
 # ---中空化 ---
