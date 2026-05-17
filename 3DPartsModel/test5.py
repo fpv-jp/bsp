@@ -23,9 +23,10 @@ ARM_W = 12.0
 MOTOR_SIZE = 37.5
 MOTOR_PITCH = 19.0 / 2
 
-MAIN_DEPTH = 5.0
+MAIN_DEPTH = 6.0
 
 M3 = 3.0
+M5 = 5.0
 
 # ------------------------------------------------------------------------------------
 # モータ・腕
@@ -67,15 +68,15 @@ motor.rotation_euler[2] = -math.pi / 4
 base.cut_cube(target=motor, scale=(20, 10, 10), location=(0.0, 5.0, 0.0))
 
 # ボディ取り付け穴----------------------------
-base.cut_cylinder(target=motor, radius=M3 / 2, depth=MAIN_DEPTH * 2)
+base.cut_cylinder(target=motor, radius=M5 / 2, depth=MAIN_DEPTH * 2)
 base.cut_cylinder(
     target=motor, radius=M3 / 2, depth=MAIN_DEPTH * 2, location=(-30.5 / 2, -30.5 / 2, 0.0)
 )
 motor.rotation_euler[2] = 0
 
 # 中心を戻す(step出力用)----------------------------
-motor.location = (0.0, ARM_L / 2, 0.0)
-base.set_origin(motor, (0.0, 0.0, 0.0))  # 回転の起点をシーンの(0,0,0)に設定
+#motor.location = (0.0, ARM_L / 2, 0.0)
+#base.set_origin(motor, (0.0, 0.0, 0.0))  # 回転の起点をシーンの(0,0,0)に設定
 
 # 他の腕を複製----------------------------
 motor2 = base.copy(motor, rotation=(0, 0, math.pi / 2))
@@ -88,10 +89,11 @@ motor4 = base.copy(motor, rotation=(0, 0, -math.pi / 2))
 FC_PITCH = 30.5 / 2
 MAIN_DEPTH = 3.0
 
+# 天板----------------------------
 body = base.create_cube(
     scale=(FC_PITCH * 2 + ARM_W / 1.42, FC_PITCH * 2 + ARM_W / 1.42, MAIN_DEPTH)
 )
-base.cut_cylinder(target=body, radius=M3 / 2, depth=MAIN_DEPTH * 2)
+base.cut_cylinder(target=body, radius=M5 / 2, depth=MAIN_DEPTH * 2)
 
 FC_HOLES = [
     (FC_PITCH, FC_PITCH),
@@ -110,5 +112,8 @@ for i, (x, y) in enumerate(FC_HOLES):
         vertices=64,
     )
 
-body.location = (0.0, 0.0, 2.5 + 1.5)
+body.location = (0.0, 0.0, 3.0 + 1.5)
 body.rotation_euler[2] = math.pi / 4
+
+# 底板を複製----------------------------
+body2 = base.copy(body, location=(0.0, 0.0, - 3.0 - 1.5))
