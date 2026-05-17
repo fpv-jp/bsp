@@ -96,10 +96,9 @@ body_inner = create_body(WALL)
 base.modifier_apply(obj=armY_inner, target=body_inner, operation="UNION")
 base.modifier_apply(obj=armX_inner, target=body_inner, operation="UNION")
 
-# --- 確認のため前面カット ---
-if TEST_CUT:
-    test = base.create_cube(scale=(300, 300, 400), location=(0, -150, 0))
-    base.modifier_apply(obj=test, target=body_inner, operation="UNION")
-
 # ---中空化 ---
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
+
+# --- 確認のため前面カット ---
+if TEST_CUT:
+    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)

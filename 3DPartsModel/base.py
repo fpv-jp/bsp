@@ -30,11 +30,11 @@ def init():
         raise RuntimeError("No 3D View found. Please run the script in a 3D View.")
 
 
-def _apply_boolean(target, obj, operation, name):
+def _apply_boolean(target, obj, operation, name, solver="EXACT"):
     """Apply boolean modifier and remove the tool object."""
     modifier = target.modifiers.new(name=name, type="BOOLEAN")
     modifier.operation = operation
-    modifier.solver = "EXACT"
+    modifier.solver = solver
     modifier.use_self = True
     modifier.double_threshold = 0.0001
     modifier.object = obj
@@ -63,10 +63,10 @@ def add_cube(target, scale, location=(0, 0, 0), rotation=(0, 0, 0), name="add_cu
     _apply_boolean(target, bpy.context.active_object, "UNION", name)
 
 
-def cut_cube(target, scale, location=(0, 0, 0), rotation=(0, 0, 0), name="cut_cube"):
+def cut_cube(target, scale, location=(0, 0, 0), rotation=(0, 0, 0), name="cut_cube", solver="EXACT"):
     """Cut a cube from target (DIFFERENCE)."""
     bpy.ops.mesh.primitive_cube_add(size=1, scale=scale, location=location, rotation=rotation)
-    _apply_boolean(target, bpy.context.active_object, "DIFFERENCE", name)
+    _apply_boolean(target, bpy.context.active_object, "DIFFERENCE", name, solver)
 
 
 # =============================================================================
@@ -423,9 +423,22 @@ def taper(obj, top_scale=0.0, bottom_scale=1.0, segments=16, curve="cos", power=
 # Object Operations
 # =============================================================================
 
-def modifier_apply(obj, target, operation="UNION", name="modifier_apply"):
+def modifier_apply(obj, target, operation="UNION", name="modifier_apply", solver="EXACT"):
     """Apply boolean modifier between two objects."""
-    _apply_boolean(target, obj, operation, name)
+    _apply_boolean(target, obj, operation, name, solver)
+
+
+def bisect(obj, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_inner=False, clear_outer=False):
+    """Bisect object with a plane and fill the cut face.
+    clear_inner: remove the side the normal points toward.
+    clear_outer: remove the opposite side.
+    """
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.bisect(plane_co=plane_co, plane_no=plane_no, use_fill=True,
+                        clear_inner=clear_inner, clear_outer=clear_outer)
+    bpy.ops.object.mode_set(mode='OBJECT')
 
 
 def set_origin(obj, point=(0.0, 0.0, 0.0)):
