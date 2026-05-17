@@ -35,7 +35,7 @@ TEST_CUT = False
 
 def create_motor(sharpen):
     # --- モータ ---
-    motor = base.create_cylinder_smooth(radius=MOTOR_R - sharpen, depth=MOTOR_D)
+    motor = base.create_cylinder(radius=MOTOR_R - sharpen, depth=MOTOR_D, vertices=64)
     base.taper(motor, segments=32, curve="tear", power=0.88)
     if sharpen > 0:
         base.add_cylinder(target=motor, radius=MOTOR_R, depth=100, location=(0.0, 0.0, 30))
@@ -45,7 +45,7 @@ def create_motor(sharpen):
 def create_arm_motor(sharpen):
     # --- 腕 ---
     arm = base.create_tear_beam(
-        depth=INCH, width=ARM_W - sharpen * 2, height=ARM_W * 3 - sharpen * 2, power=0.75
+        depth=INCH, width=ARM_W - sharpen * 2, height=ARM_W * 3 - sharpen * 2, power=0.75, smooth=False
     )
 
     # --- モータ ---

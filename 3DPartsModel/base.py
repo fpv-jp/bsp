@@ -223,7 +223,7 @@ def create_tear_body(radius, depth, vertices=64, segments=64, power=0.66, peak=0
 # Tear Beam (teardrop cross-section beam)
 # =============================================================================
 
-def create_tear_beam(depth, width, height, segments=32, power=0.7, location=(0, 0, 0), rotation=(0, 0, 0), name="Tear_Beam"):
+def create_tear_beam(depth, width, height, segments=32, power=0.7, location=(0, 0, 0), rotation=(0, 0, 0), smooth=True, name="Tear_Beam"):
     """Create a beam with teardrop cross-section.
     depth: beam length (Y axis).
     width: cross-section width (X).
@@ -269,7 +269,8 @@ def create_tear_beam(depth, width, height, segments=32, power=0.7, location=(0, 
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.select_all(action="DESELECT")
     obj.select_set(True)
-    bpy.ops.object.shade_smooth()
+    if smooth:
+        bpy.ops.object.shade_smooth()
     return obj
 
 
