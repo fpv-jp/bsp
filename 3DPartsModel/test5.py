@@ -155,6 +155,8 @@ battery1.location = (0.0, 0.0, 45.0)
 fc.location = (0.0, 0.0, -12.0)
 esc.location = (0.0, 0.0, -23.0)
 
-# --- 全オブジェクトをZ軸に55移動 ---
-for obj in bpy.context.scene.objects:
-    obj.location.z += 55
+
+bpy.ops.object.select_all(action="SELECT")
+bpy.context.view_layer.objects.active = next(iter(bpy.context.scene.objects))
+bpy.ops.object.join()
+bpy.context.active_object.location.z += 55
