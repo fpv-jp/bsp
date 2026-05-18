@@ -11,6 +11,11 @@ sys.modules[module_name] = module
 
 import base
 
+# test5オブジェクトをinitの削除から保護
+_test5 = bpy.data.objects.get("test5")
+if _test5:
+    _test5.hide_set(True)
+
 base.init()
 
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
@@ -21,7 +26,7 @@ MOTOR_PITCH = INCH / 2
 
 ARM_W = 14.5
 
-MOTOR_R = 38.2 / 2
+MOTOR_R = 37.0 / 2
 MOTOR_D = MOTOR_R * 8
 
 BODY_R = 33.0
@@ -118,6 +123,11 @@ base.modifier_apply(obj=arm_inner, target=body_inner, operation="UNION")
 
 # ---中空化 ---
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
+
+# --- test5でDIFFERENCE ---
+if _test5:
+    _test5.hide_set(False)
+    base.modifier_apply(obj=_test5, target=body, operation="DIFFERENCE")
 
 ## --- 確認のため前面カット ---
 if TEST_CUT:

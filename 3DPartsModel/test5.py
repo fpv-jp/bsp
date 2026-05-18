@@ -41,21 +41,40 @@ motor = base.create_cube(scale=(MOTOR_PITCH * 2.08, MOTOR_PITCH * 2.08, MAIN_DEP
 PROP_INCH = 6 * 25.4  # 6inch
 PROP_DEPTH = 9.0
 
-MOTOR_SIZE = 40.7
-MOTOR_DEPTH = 40.8 - 15.9
+MOTOR_SIZE = 37.0
 
-base.add_cylinder(
-    target=motor,
-    radius=MOTOR_SIZE / 2,
-    depth=MOTOR_DEPTH,
-    location=(0.0, 0.0, -(MAIN_DEPTH + MOTOR_DEPTH) / 2),
+MOTOR_Z1 = 45.30
+MOTOR_Z2 = 39.10
+MOTOR_Z3 = 16.60
+
+MOTOR_MAIN_DEPTH = MOTOR_Z2 - MOTOR_Z3
+MOTOR_MOUNT_DEPTH = MOTOR_Z1 - MOTOR_Z2
+
+m = base.create_cylinder( 
+    radius=5.0 / 2,
+    depth=MOTOR_Z1,
 )
 base.add_cylinder(
-    target=motor,
+    target=m,
+    radius=MOTOR_SIZE / 2, 
+    depth=MOTOR_MAIN_DEPTH,
+    location=(0.0, 0.0, (MOTOR_Z1-MOTOR_MAIN_DEPTH)/2-MOTOR_MOUNT_DEPTH),
+)
+base.add_cylinder(
+    target=m, 
+    radius=19.0 / 2,
+    depth=MOTOR_MOUNT_DEPTH,
+    location=(0.0, 0.0, (MOTOR_Z1 - MOTOR_MOUNT_DEPTH) / 2),
+)
+base.add_cylinder(
+    target=m,
     radius=PROP_INCH / 2,
     depth=PROP_DEPTH,
-    location=(0.0, 0.0, -(MAIN_DEPTH + PROP_DEPTH) / 2 - MOTOR_DEPTH),
+    location=(0.0, 0.0, (MOTOR_Z1 - PROP_DEPTH) / 2-MOTOR_MAIN_DEPTH-MOTOR_MOUNT_DEPTH),
 )
+m.location=(0.0,0.0,-(MOTOR_Z1+MAIN_DEPTH)/2)
+#m.rotation_euler[0] = math.pi
+base.modifier_apply(obj=m, target=motor, operation="UNION")
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # 腕
@@ -159,4 +178,5 @@ esc.location = (0.0, 0.0, -23.0)
 bpy.ops.object.select_all(action="SELECT")
 bpy.context.view_layer.objects.active = next(iter(bpy.context.scene.objects))
 bpy.ops.object.join()
+bpy.context.active_object.rotation_euler[0] = math.pi
 bpy.context.active_object.location.z += 55
