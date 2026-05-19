@@ -223,34 +223,50 @@ def create_tear_body(radius, depth, vertices=64, segments=64, power=0.66, peak=0
 # Tear Beam (teardrop cross-section beam)
 # =============================================================================
 
-def create_tear_beam(depth, width, height, segments=32, power=0.7, location=(0, 0, 0), rotation=(0, 0, 0), smooth=True, name="Tear_Beam"):
+def create_tear_beam(depth, width, height, segments=32, power=0.7,
+                     width_end=None, height_end=None, flat_bottom=False,
+                     location=(0, 0, 0), rotation=(0, 0, 0), smooth=False, name="Tear_Beam"):
     """Create a beam with teardrop cross-section.
     depth: beam length (Y axis).
-    width: cross-section width (X).
-    height: cross-section teardrop height (Z).
+    width / height: cross-section at y=-depth/2 (front end).
+    width_end / height_end: cross-section at y=+depth/2 (back end). Defaults to width/height.
+    flat_bottom: flat horizontal face at z=-h/2 instead of pointed teardrop tip.
+                 For a truly flat bottom surface, keep height_end == height.
     """
+    if width_end is None:
+        width_end = width
+    if height_end is None:
+        height_end = height
+
     mesh = bpy.data.meshes.new(f"{name}_Mesh")
     bm = bmesh.new()
 
-    # Teardrop profile in XZ plane (right half, bottom to top)
-    pts = []
-    for i in range(segments + 1):
-        t = i / segments
-        z = -height / 2 + height * t
-        x = width / 2 * math.sin(math.pi * t ** power)
-        pts.append((x, z))
+    def make_ring(y, w, h):
+        if flat_bottom:
+            # Right half: bottom-right corner (w/2, -h/2) → top peak (0, h/2)
+            pts_right = []
+            for i in range(segments + 1):
+                t = i / segments
+                z = -h / 2 + h * t
+                x = w / 2 * math.cos(math.pi / 2 * t ** power)
+                pts_right.append((x, z))
+            profile = list(pts_right)
+            profile += [(-x, z) for x, z in reversed(pts_right[:-1])]
+        else:
+            pts = []
+            for i in range(segments + 1):
+                t = i / segments
+                z = -h / 2 + h * t
+                x = w / 2 * math.sin(math.pi * t ** power)
+                pts.append((x, z))
+            profile = list(pts)
+            profile += [(-x, z) for x, z in reversed(pts[1:-1])]
+        return [bm.verts.new((x, y, z)) for x, z in profile]
 
-    # Full profile: right half + left half (mirrored)
-    profile = list(pts)
-    profile += [(-x, z) for x, z in reversed(pts[1:-1])]
+    front = make_ring(-depth / 2, width, height)
+    back  = make_ring( depth / 2, width_end, height_end)
 
-    n = len(profile)
-    y_front = -depth / 2
-    y_back = depth / 2
-
-    front = [bm.verts.new((x, y_front, z)) for x, z in profile]
-    back = [bm.verts.new((x, y_back, z)) for x, z in profile]
-
+    n = len(front)
     for i in range(n):
         j = (i + 1) % n
         bm.faces.new([front[i], front[j], back[j], back[i]])

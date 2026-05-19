@@ -34,7 +34,7 @@ BODY_D = BODY_R * 10
 
 WALL = 1.5  # 壁厚mm
 
-#TEST_CUT = True
+# TEST_CUT = True
 TEST_CUT = False
 
 
@@ -47,30 +47,54 @@ def create_motor(sharpen):
     return motor
 
 
-def create_arm_motor(sharpen):
-    # --- 腕 ---
-    arm = base.create_tear_beam(
-        depth=INCH,
+def create_arm(sharpen):
+    # --- 腕 中央 ---
+    arm = base.create_cube(
+        scale=(ARM_W - sharpen * 2, INCH / 1.75, ARM_W * 3 - sharpen * 2),
+        location=(0.0, INCH / 4, 0.0),
+    )
+
+    # --- 腕 上部 ---
+    arm_top = base.create_tear_beam(
+        depth=INCH / 1.75,
         width=ARM_W - sharpen * 2,
         height=ARM_W * 3 - sharpen * 2,
         power=0.75,
-        smooth=False,
+        location=(0.0, INCH / 4, -ARM_W * 1.2),
     )
 
-    # --- モータ ---
-    motor1 = create_motor(sharpen)
-    motor1.location = (0, MOTOR_PITCH, 0)
-    motor2 = create_motor(sharpen)
-    motor2.location = (0, -MOTOR_PITCH, 0)
+    base.modifier_apply(obj=arm_top, target=arm, operation="UNION")
+    arm.rotation_euler = (math.pi / 8, 0, 0)
+    arm.location = (0.0, 0.0, -ARM_W * 1.4)
 
-    arm.location = (0.0, 0.0, -15)
+    base.cut_cube(
+        target=arm,
+        scale=(ARM_W, INCH, ARM_W * 4),
+        location=(0.0, INCH / 4, ARM_W * 1.75),
+    )
 
-    # --- 腕にモータを結合 ---
-    base.modifier_apply(obj=motor1, target=arm, operation="UNION")
-    base.modifier_apply(obj=motor2, target=arm, operation="UNION")
+    # --- 腕 下部 ---
+    arm_bottom = base.create_tear_beam(
+        depth=INCH / 2,
+        width=ARM_W - sharpen * 2,
+        height=ARM_W * 3 - sharpen * 2,
+        power=0.75,
+        location=(0.0, INCH / 4, 0.0),
+    )
+    base.modifier_apply(obj=arm_bottom, target=arm, operation="UNION")
 
-    arm2 = base.copy(arm, rotation=(0, 0, math.pi / 2))
-    base.modifier_apply(obj=arm2, target=arm, operation="UNION")
+    # test-------------------------------------
+    #    base.add_cube(
+    #        target=arm,
+    #        scale=(ARM_W+1, INCH, 6.0),
+    #        location=(0.0, 0.0, -5.0),
+    #    )
+    #    base.add_cylinder(
+    #        target=arm,
+    #        radius=MOTOR_R,
+    #        depth=6.0,
+    #        location=(0.0, MOTOR_PITCH, -5.0),
+    #    )
     return arm
 
 
@@ -106,29 +130,47 @@ def create_body(sharpen):
 # --------------------------------------------
 
 # --- 外形結合 ---
-body = create_body(0)
-arm = create_arm_motor(0)
+
+arm = create_arm(0)
+motor = create_motor(0)
+
+motor.location = (0, MOTOR_PITCH, 13)
+
+# --- 腕にモータを結合 ---
+base.modifier_apply(obj=motor, target=arm, operation="UNION")
+
 arm.location = (0.0, 0.0, 60)
+
+arm2 = base.copy(arm, rotation=(math.pi / 8, 0, math.pi))
+arm3 = base.copy(arm2, rotation=(math.pi / 8, 0, math.pi / 2))
+arm4 = base.copy(arm2, rotation=(math.pi / 8, 0, -math.pi / 2))
+
+# --- 胴体に腕を結合 ---
+body = create_body(0)
 base.modifier_apply(obj=arm, target=body, operation="UNION")
+base.modifier_apply(obj=arm2, target=body, operation="UNION")
+base.modifier_apply(obj=arm3, target=body, operation="UNION")
+base.modifier_apply(obj=arm4, target=body, operation="UNION")
 
-# --------------------------------------------
-# --- 中空化 ---------------------------------
-# --------------------------------------------
 
-# ---内形結合 ---
-body_inner = create_body(WALL)
-arm_inner = create_arm_motor(WALL)
-arm_inner.location = (0.0, 0.0, 60)
-base.modifier_apply(obj=arm_inner, target=body_inner, operation="UNION")
+## --------------------------------------------
+## --- 中空化 ---------------------------------
+## --------------------------------------------
 
-# ---中空化 ---
-base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
+## ---内形結合 ---
+# body_inner = create_body(WALL)
+# arm_inner = create_arm_motor(WALL)
+# arm_inner.location = (0.0, 0.0, 60)
+# base.modifier_apply(obj=arm_inner, target=body_inner, operation="UNION")
 
-# --- test5でDIFFERENCE ---
-#if _test5:
-#    _test5.hide_set(False)
-#    base.modifier_apply(obj=_test5, target=body, operation="DIFFERENCE")
+## ---中空化 ---
+# base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-## --- 確認のため前面カット ---
-if TEST_CUT:
-    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+## --- test5でDIFFERENCE ---
+##if _test5:
+##    _test5.hide_set(False)
+##    base.modifier_apply(obj=_test5, target=body, operation="DIFFERENCE")
+
+### --- 確認のため前面カット ---
+# if TEST_CUT:
+#    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
