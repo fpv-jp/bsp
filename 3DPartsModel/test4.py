@@ -36,7 +36,7 @@ BODY_D = BODY_R * 10
 
 WALL = 1.5  # 壁厚mm
 
-# TEST_CUT = True
+#TEST_CUT = True
 TEST_CUT = False
 
 
@@ -135,14 +135,6 @@ def create_body(sharpen):
     base.modifier_apply(obj=body_top, target=body, operation="UNION")
     base.modifier_apply(obj=body_bottom, target=body, operation="UNION")
 
-    # --- 胴体の下部をカット ---
-    base.cut_cylinder(
-        target=body,
-        radius=BODY_R + WALL,
-        depth=100.0,
-        location=(0.0, 0.0, 160.0),
-    )
-
     return body
 
 
@@ -175,17 +167,25 @@ arm2 = base.copy(arm, rotation=(math.pi / 8, 0, math.pi))
 arm3 = base.copy(arm2, rotation=(math.pi / 8, 0, math.pi / 2))
 arm4 = base.copy(arm2, rotation=(math.pi / 8, 0, -math.pi / 2))
 
-# --- 胴体に腕を結合 ---
 body = create_body(0)
+
+# --- 胴体の下部をカット ---
+base.cut_cylinder(
+    target=body,
+    radius=BODY_R + WALL,
+    depth=100.0,
+    location=(0.0, 0.0, 160.0),
+)
+
+# --- 胴体に腕を結合 ---
 base.modifier_apply(obj=arm, target=body, operation="UNION")
 base.modifier_apply(obj=arm2, target=body, operation="UNION")
 base.modifier_apply(obj=arm3, target=body, operation="UNION")
 base.modifier_apply(obj=arm4, target=body, operation="UNION")
 
-
-## --------------------------------------------
-## --- 中空化 ---------------------------------
-## --------------------------------------------
+# --------------------------------------------
+# --- 中空化 ---------------------------------
+# --------------------------------------------
 
 # --- 内形結合 ---
 
@@ -196,14 +196,6 @@ motor_inner.location = (0, MOTOR_PITCH, 15)
 
 # --- 腕にモータを結合 ---
 base.modifier_apply(obj=motor_inner, target=arm_inner, operation="UNION")
-
-# --- モータの下部をカット ---
-base.cut_cylinder(
-    target=arm_inner,
-    radius=MOTOR_R + WALL,
-    depth=100.0,
-    location=(0.0, MOTOR_PITCH, 50.0 + 6.0),
-)
 
 arm_inner.location = (0.0, 0.0, 34)
 
@@ -222,7 +214,6 @@ base.modifier_apply(obj=arm_inner4, target=body_inner, operation="UNION")
 # --- 中空化 ---
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-
 # --- 確認のため前面カット ---
-#if TEST_CUT:
-#    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+if TEST_CUT:
+    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
