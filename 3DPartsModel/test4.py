@@ -12,13 +12,13 @@ sys.modules[module_name] = module
 import base
 
 # test5オブジェクトをinitの削除から保護
-#_test5 = bpy.data.objects.get("test5")
-#if _test5:
+# _test5 = bpy.data.objects.get("test5")
+# if _test5:
 #    _test5.hide_set(True)
 
 base.init()
 
-#if _test5:
+# if _test5:
 #    _test5.hide_set(False)
 
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
@@ -37,7 +37,7 @@ BODY_D = BODY_R * 10
 
 WALL = 1.5  # 壁厚mm
 
-#TEST_CUT = True
+# TEST_CUT = True
 TEST_CUT = False
 
 
@@ -45,9 +45,8 @@ def create_motor(sharpen):
     # --- モータ ---
     motor = base.create_cylinder(radius=MOTOR_R - sharpen, depth=MOTOR_D, vertices=64)
     base.taper(motor, segments=32, curve="tear", power=0.75)
-#    if sharpen > 0:
-#        base.add_cylinder(target=motor, radius=MOTOR_R + 0.25, depth=100, location=(0.0, 0.0, 60))
-
+    #    if sharpen > 0:
+    #        base.add_cylinder(target=motor, radius=MOTOR_R + 0.25, depth=100, location=(0.0, 0.0, 60))
 
     return motor
 
@@ -87,19 +86,19 @@ def create_arm(sharpen):
         location=(0.0, INCH / 4, 0.0),
     )
     base.modifier_apply(obj=arm_bottom, target=arm, operation="UNION")
-    
-    #test-------------------------------------
-#    base.add_cube(
-#        target=arm,
-#        scale=(ARM_W+1, INCH, 6.0),
-#        location=(0.0, 0.0, -5.0),
-#    )
-#    base.add_cylinder(
-#        target=arm,
-#        radius=MOTOR_R,
-#        depth=6.0,
-#        location=(0.0, MOTOR_PITCH, -5.0),
-#    )
+
+    # test-------------------------------------
+    #    base.add_cube(
+    #        target=arm,
+    #        scale=(ARM_W+1, INCH, 6.0),
+    #        location=(0.0, 0.0, -5.0),
+    #    )
+    #    base.add_cylinder(
+    #        target=arm,
+    #        radius=MOTOR_R,
+    #        depth=6.0,
+    #        location=(0.0, MOTOR_PITCH, -5.0),
+    #    )
 
     return arm
 
@@ -148,11 +147,11 @@ base.modifier_apply(obj=motor, target=arm, operation="UNION")
 # bottom cut-------------------------------------
 base.cut_cylinder(
     target=arm,
-    radius=MOTOR_R+WALL,
+    radius=MOTOR_R + WALL,
     depth=100.0,
-    location=(0.0, MOTOR_PITCH, 50.0+6.0),
+    location=(0.0, MOTOR_PITCH, 50.0 + 6.0),
 )
-    
+
 arm.location = (0.0, 0.0, 34)
 
 arm2 = base.copy(arm, rotation=(math.pi / 8, 0, math.pi))
