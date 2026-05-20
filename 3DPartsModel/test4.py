@@ -11,15 +11,14 @@ sys.modules[module_name] = module
 
 import base
 
-# test5オブジェクトをinitの削除から保護
-_test5 = bpy.data.objects.get("test5")
-if _test5:
-    _test5.hide_set(True)
+#_test5 = bpy.data.objects.get("test5")
+#if _test5:
+#    _test5.hide_set(True)
 
 base.init()
 
-if _test5:
-    _test5.hide_set(False)
+#if _test5:
+#    _test5.hide_set(False)
 
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
@@ -49,16 +48,24 @@ def create_motor(sharpen):
 
 
 def create_arm(sharpen):
+
+    sharpen2 = sharpen * 2
+
     # --- 腕 中央 ---
     arm = base.create_cube(
-        scale=(ARM_W - sharpen * 2, INCH / 1.75, ARM_W * 3 - sharpen * 2),
+        scale=(
+            ARM_W - sharpen2,
+            INCH / 1.75,
+            ARM_W * 3 - sharpen2,
+        ),
         location=(0.0, INCH / 4, 0.0),
     )
+
     # --- 腕 上部 ---
     arm_top = base.create_tear_beam(
         depth=INCH / 1.75,
-        width=ARM_W - sharpen * 2,
-        height=ARM_W * 3 - sharpen * 2,
+        width=ARM_W - sharpen2,
+        height=ARM_W * 3 - sharpen2,
         power=0.75,
         location=(0.0, INCH / 4, -ARM_W * 1.2),
     )
@@ -78,25 +85,26 @@ def create_arm(sharpen):
     # --- 腕 下部 ---
     arm_bottom = base.create_tear_beam(
         depth=INCH / 2,
-        width=ARM_W - sharpen * 2,
-        height=ARM_W * 3 - sharpen * 2,
+        width=ARM_W - sharpen2,
+        height=ARM_W * 3 - sharpen2,
         power=0.75,
         location=(0.0, INCH / 4, 0.0),
     )
+
     base.modifier_apply(obj=arm_bottom, target=arm, operation="UNION")
 
     # test-------------------------------------
-    #    base.add_cube(
-    #        target=arm,
-    #        scale=(ARM_W+1, INCH, 6.0),
-    #        location=(0.0, 0.0, -5.0),
-    #    )
-    #    base.add_cylinder(
-    #        target=arm,
-    #        radius=MOTOR_R,
-    #        depth=6.0,
-    #        location=(0.0, MOTOR_PITCH, -5.0),
-    #    )
+#    base.add_cube(
+#        target=arm,
+#        scale=(ARM_W + 1, INCH, 6.0),
+#        location=(0.0, 0.0, -5.0),
+#    )
+#    base.add_cylinder(
+#        target=arm,
+#        radius=MOTOR_R,
+#        depth=6.0,
+#        location=(0.0, MOTOR_PITCH, -5.0),
+#    )
 
     return arm
 
@@ -118,10 +126,10 @@ def create_body(sharpen):
         radius=BODY_R - sharpen, depth=BODY_D, power=0.66, peak=0.75, smooth=False
     )
 
-    # if sharpen > 0:
-    #     base.add_cylinder(
-    #         target=body_bottom, radius=BODY_R, depth=100, location=(0.0, 0.0, BODY_D / 1.9)
-    #     )
+#    if sharpen > 0:
+#        base.add_cylinder(
+#            target=body_bottom, radius=BODY_R, depth=100, location=(0.0, 0.0, BODY_D / 1.9)
+#        )
 
     # --- 胴体結合 ---
     base.modifier_apply(obj=body_top, target=body, operation="UNION")
@@ -216,5 +224,5 @@ base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
 
 # --- 確認のため前面カット ---
-if TEST_CUT:
-    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+#if TEST_CUT:
+#    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
