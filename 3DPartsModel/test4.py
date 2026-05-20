@@ -18,8 +18,8 @@ import base
 
 base.init()
 
-# if _test5:
-#    _test5.hide_set(False)
+if _test5:
+    _test5.hide_set(False)
 
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
@@ -54,7 +54,10 @@ def create_motor(sharpen):
 def create_arm(sharpen):
     # --- 腕 中央 ---
     arm = base.create_cube(
-        scale=(ARM_W - sharpen * 2, INCH / 1.75, ARM_W * 3 - sharpen * 2),
+        scale=(
+        ARM_W - sharpen * 2, 
+        INCH / 1.75, 
+        ARM_W * 3 - sharpen * 2),
         location=(0.0, INCH / 4, 0.0),
     )
 
@@ -67,10 +70,12 @@ def create_arm(sharpen):
         location=(0.0, INCH / 4, -ARM_W * 1.2),
     )
 
+    # --- 腕 中央 上部 結合 ---
     base.modifier_apply(obj=arm_top, target=arm, operation="UNION")
     arm.rotation_euler = (math.pi / 8, 0, 0)
     arm.location = (0.0, 0.0, -ARM_W * 1.4)
 
+    # --- 下をカット ---
     base.cut_cube(
         target=arm,
         scale=(ARM_W, INCH, ARM_W * 4),
@@ -127,6 +132,14 @@ def create_body(sharpen):
     base.modifier_apply(obj=body_top, target=body, operation="UNION")
     base.modifier_apply(obj=body_bottom, target=body, operation="UNION")
 
+    # --- 胴体の下部をカット ---
+    base.cut_cylinder(
+        target=body,
+        radius=BODY_R + WALL,
+        depth=100.0,
+        location=(0.0, 0.0, 160.0),
+    )
+
     return body
 
 
@@ -144,7 +157,7 @@ motor.location = (0, MOTOR_PITCH, 15)
 # --- 腕にモータを結合 ---
 base.modifier_apply(obj=motor, target=arm, operation="UNION")
 
-# bottom cut-------------------------------------
+# --- モータの下部をカット ---
 base.cut_cylinder(
     target=arm,
     radius=MOTOR_R + WALL,
@@ -154,6 +167,7 @@ base.cut_cylinder(
 
 arm.location = (0.0, 0.0, 34)
 
+# --- 腕・モータを複製 ---
 arm2 = base.copy(arm, rotation=(math.pi / 8, 0, math.pi))
 arm3 = base.copy(arm2, rotation=(math.pi / 8, 0, math.pi / 2))
 arm4 = base.copy(arm2, rotation=(math.pi / 8, 0, -math.pi / 2))
