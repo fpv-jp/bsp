@@ -94,19 +94,6 @@ def create_arm(sharpen):
 
     base.modifier_apply(obj=arm_bottom, target=arm, operation="UNION")
 
-    # position test-------------------------------------
-#    base.add_cube(
-#        target=arm,
-#        scale=(ARM_W + 1, INCH/2, 6.0),
-#        location=(0.0, INCH/4, -5.0),
-#    )
-#    base.cut_cylinder(
-#        target=arm,
-#        radius=MOTOR_R+.1,
-#        depth=6.0,
-#        location=(0.0, MOTOR_PITCH, -5.0),
-#    )
-
     return arm
 
 
@@ -141,6 +128,7 @@ def create_body(sharpen):
 # --- 外形結合 ---
 
 arm = create_arm(0)
+
 motor = create_motor(0)
 
 motor.location = (0, MOTOR_PITCH, 16)
@@ -154,6 +142,7 @@ base.cut_cylinder(
     radius=MOTOR_R + WALL,
     depth=100.0,
     location=(0.0, MOTOR_PITCH, 50.0 + 6.0),
+    vertices=64,
 )
 
 arm.location = (0.0, 0.0, 34)
@@ -166,24 +155,20 @@ arm4 = base.copy(arm2, rotation=(math.pi / 8, 0, -math.pi / 2))
 body = create_body(0)
 
 # --- 胴体の下部をカット ---
-#base.cut_cylinder(
-#    target=body,
-#    radius=BODY_R + WALL,
-#    depth=100.0,
-#    location=(0.0, 0.0, 160.0),
-#)
-#base.cut_cylinder(
-#    target=body,
-#    radius=BODY_R + WALL,
-#    depth=100.0,
-#    location=(0.0, 0.0, -160.0),
-#)
+base.cut_cylinder(
+    target=body,
+    radius=BODY_R,
+    depth=100.0,
+    location=(0.0, 0.0, 180.0),
+)
+
 
 # --- 胴体に腕を結合 ---
 base.modifier_apply(obj=arm, target=body, operation="UNION")
 base.modifier_apply(obj=arm2, target=body, operation="UNION")
 base.modifier_apply(obj=arm3, target=body, operation="UNION")
 base.modifier_apply(obj=arm4, target=body, operation="UNION")
+
 
 # --------------------------------------------
 # --- 中空化 ---------------------------------
@@ -192,6 +177,13 @@ base.modifier_apply(obj=arm4, target=body, operation="UNION")
 # --- 内形結合 ---
 
 arm_inner = create_arm(WALL)
+
+#base.add_cube(
+#    target=arm_inner,
+#    scale=(ARM_W, INCH, 6.0),
+#    location=(0.0, 0.0, 55.0),
+#)
+
 motor_inner = create_motor(WALL)
 
 motor_inner.location = (0, MOTOR_PITCH, 16)
@@ -213,6 +205,18 @@ base.modifier_apply(obj=arm_inner2, target=body_inner, operation="UNION")
 base.modifier_apply(obj=arm_inner3, target=body_inner, operation="UNION")
 base.modifier_apply(obj=arm_inner4, target=body_inner, operation="UNION")
 
+base.add_cube(
+    target=body_inner,
+    scale=(ARM_W + .1, INCH, 6.1),
+    location=(0.0, 0.0, 55.0),
+)
+base.add_cube(
+    target=body_inner,
+    scale=(ARM_W + .1, INCH, 6.1),
+    location=(0.0, 0.0, 55.0),
+    rotation=(0, 0, math.pi / 2)
+)
+
 # --- 中空化 ---
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
@@ -228,8 +232,8 @@ body.rotation_euler = (math.pi, 0, math.pi / 4)
 #    scale=(BODY_R*2, BODY_R*2, BODY_R*3),
 #    location=(0.0, BODY_R, 120.0),
 #)
-#base.cut_cube(
+#base.add_cube(
 #    target=body,
-#    scale=(BODY_R*2, BODY_R, BODY_R*3),
+#    scale=(BODY_R*2, BODY_R, BODY_R*2),
 #    location=(0.0, BODY_R, 40.0),
 #)

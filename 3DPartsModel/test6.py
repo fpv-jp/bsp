@@ -11,11 +11,11 @@ sys.modules[module_name] = module
 
 import base
 
-_test6 = bpy.data.objects.get("test6")
-if _test6:
-    _test6.hide_set(True)
+_test4_all = bpy.data.objects.get("test4_all")
+if _test4_all:
+    _test4_all.hide_set(True)
 
 base.init()
 
-if _test6:
-    _test6.hide_set(False)
+if _test4_all:
+    _test4_all.hide_set(False)
