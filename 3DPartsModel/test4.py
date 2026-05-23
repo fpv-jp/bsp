@@ -129,111 +129,111 @@ def create_body(sharpen):
 
 arm = create_arm(0)
 
-motor = create_motor(0)
+# motor = create_motor(0)
 
-motor.location = (0, MOTOR_PITCH, 16)
+# motor.location = (0, MOTOR_PITCH, 16)
 
-# --- 腕にモータを結合 ---
-base.modifier_apply(obj=motor, target=arm, operation="UNION")
+# # --- 腕にモータを結合 ---
+# base.modifier_apply(obj=motor, target=arm, operation="UNION")
 
-# --- モータの下部をカット ---
-base.cut_cylinder(
-    target=arm,
-    radius=MOTOR_R + WALL,
-    depth=100.0,
-    location=(0.0, MOTOR_PITCH, 50.0 + 6.0),
-    vertices=64,
-)
+# # --- モータの下部をカット ---
+# base.cut_cylinder(
+#     target=arm,
+#     radius=MOTOR_R + WALL,
+#     depth=100.0,
+#     location=(0.0, MOTOR_PITCH, 50.0 + 6.0),
+#     vertices=64,
+# )
 
-arm.location = (0.0, 0.0, 34)
+# arm.location = (0.0, 0.0, 34)
 
-# --- 腕・モータを複製 ---
-arm2 = base.copy(arm, rotation=(math.pi / 8, 0, math.pi))
-arm3 = base.copy(arm2, rotation=(math.pi / 8, 0, math.pi / 2))
-arm4 = base.copy(arm2, rotation=(math.pi / 8, 0, -math.pi / 2))
+# # --- 腕・モータを複製 ---
+# arm2 = base.copy(arm, rotation=(math.pi / 8, 0, math.pi))
+# arm3 = base.copy(arm2, rotation=(math.pi / 8, 0, math.pi / 2))
+# arm4 = base.copy(arm2, rotation=(math.pi / 8, 0, -math.pi / 2))
 
-body = create_body(0)
+# body = create_body(0)
 
-# --- 胴体の下部をカット ---
-base.cut_cylinder(
-    target=body,
-    radius=BODY_R,
-    depth=100.0,
-    location=(0.0, 0.0, 180.0),
-)
-
-
-# --- 胴体に腕を結合 ---
-base.modifier_apply(obj=arm, target=body, operation="UNION")
-base.modifier_apply(obj=arm2, target=body, operation="UNION")
-base.modifier_apply(obj=arm3, target=body, operation="UNION")
-base.modifier_apply(obj=arm4, target=body, operation="UNION")
+# # --- 胴体の下部をカット ---
+# base.cut_cylinder(
+#     target=body,
+#     radius=BODY_R,
+#     depth=100.0,
+#     location=(0.0, 0.0, 180.0),
+# )
 
 
-# --------------------------------------------
-# --- 中空化 ---------------------------------
-# --------------------------------------------
+# # --- 胴体に腕を結合 ---
+# base.modifier_apply(obj=arm, target=body, operation="UNION")
+# base.modifier_apply(obj=arm2, target=body, operation="UNION")
+# base.modifier_apply(obj=arm3, target=body, operation="UNION")
+# base.modifier_apply(obj=arm4, target=body, operation="UNION")
 
-# --- 内形結合 ---
 
-arm_inner = create_arm(WALL)
+# # --------------------------------------------
+# # --- 中空化 ---------------------------------
+# # --------------------------------------------
 
-#base.add_cube(
-#    target=arm_inner,
-#    scale=(ARM_W, INCH, 6.0),
-#    location=(0.0, 0.0, 55.0),
-#)
+# # --- 内形結合 ---
 
-motor_inner = create_motor(WALL)
+# arm_inner = create_arm(WALL)
 
-motor_inner.location = (0, MOTOR_PITCH, 16)
+# #base.add_cube(
+# #    target=arm_inner,
+# #    scale=(ARM_W, INCH, 6.0),
+# #    location=(0.0, 0.0, 55.0),
+# #)
 
-# --- 腕にモータを結合 ---
-base.modifier_apply(obj=motor_inner, target=arm_inner, operation="UNION")
+# motor_inner = create_motor(WALL)
 
-arm_inner.location = (0.0, 0.0, 34)
+# motor_inner.location = (0, MOTOR_PITCH, 16)
 
-# --- 腕・モータを複製 ---
-arm_inner2 = base.copy(arm_inner, rotation=(math.pi / 8, 0, math.pi))
-arm_inner3 = base.copy(arm_inner2, rotation=(math.pi / 8, 0, math.pi / 2))
-arm_inner4 = base.copy(arm_inner2, rotation=(math.pi / 8, 0, -math.pi / 2))
+# # --- 腕にモータを結合 ---
+# base.modifier_apply(obj=motor_inner, target=arm_inner, operation="UNION")
 
-# --- 胴体に腕を結合 ---
-body_inner = create_body(WALL)
-base.modifier_apply(obj=arm_inner, target=body_inner, operation="UNION")
-base.modifier_apply(obj=arm_inner2, target=body_inner, operation="UNION")
-base.modifier_apply(obj=arm_inner3, target=body_inner, operation="UNION")
-base.modifier_apply(obj=arm_inner4, target=body_inner, operation="UNION")
+# arm_inner.location = (0.0, 0.0, 34)
 
-base.add_cube(
-    target=body_inner,
-    scale=(ARM_W + .1, INCH, 6.1),
-    location=(0.0, 0.0, 55.0),
-)
-base.add_cube(
-    target=body_inner,
-    scale=(ARM_W + .1, INCH, 6.1),
-    location=(0.0, 0.0, 55.0),
-    rotation=(0, 0, math.pi / 2)
-)
+# # --- 腕・モータを複製 ---
+# arm_inner2 = base.copy(arm_inner, rotation=(math.pi / 8, 0, math.pi))
+# arm_inner3 = base.copy(arm_inner2, rotation=(math.pi / 8, 0, math.pi / 2))
+# arm_inner4 = base.copy(arm_inner2, rotation=(math.pi / 8, 0, -math.pi / 2))
 
-# --- 中空化 ---
-base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
+# # --- 胴体に腕を結合 ---
+# body_inner = create_body(WALL)
+# base.modifier_apply(obj=arm_inner, target=body_inner, operation="UNION")
+# base.modifier_apply(obj=arm_inner2, target=body_inner, operation="UNION")
+# base.modifier_apply(obj=arm_inner3, target=body_inner, operation="UNION")
+# base.modifier_apply(obj=arm_inner4, target=body_inner, operation="UNION")
 
-# --- 確認のため前面カット ---
-if TEST_CUT:
-    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+# base.add_cube(
+#     target=body_inner,
+#     scale=(ARM_W + .1, INCH, 6.1),
+#     location=(0.0, 0.0, 55.0),
+# )
+# base.add_cube(
+#     target=body_inner,
+#     scale=(ARM_W + .1, INCH, 6.1),
+#     location=(0.0, 0.0, 55.0),
+#     rotation=(0, 0, math.pi / 2)
+# )
 
-body.rotation_euler = (math.pi, 0, math.pi / 4)
-#base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 0, -1), clear_outer=True)
+# # --- 中空化 ---
+# base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-#base.cut_cube(
-#    target=body,
-#    scale=(BODY_R*2, BODY_R*2, BODY_R*3),
-#    location=(0.0, BODY_R, 120.0),
-#)
-#base.add_cube(
-#    target=body,
-#    scale=(BODY_R*2, BODY_R, BODY_R*2),
-#    location=(0.0, BODY_R, 40.0),
-#)
+# # --- 確認のため前面カット ---
+# if TEST_CUT:
+#     base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+
+# body.rotation_euler = (math.pi, 0, math.pi / 4)
+# #base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 0, -1), clear_outer=True)
+
+# #base.cut_cube(
+# #    target=body,
+# #    scale=(BODY_R*2, BODY_R*2, BODY_R*3),
+# #    location=(0.0, BODY_R, 120.0),
+# #)
+# #base.add_cube(
+# #    target=body,
+# #    scale=(BODY_R*2, BODY_R, BODY_R*2),
+# #    location=(0.0, BODY_R, 40.0),
+# #)

@@ -25,8 +25,8 @@ MOTOR_PITCH = 19.0 / 2
 
 MAIN_DEPTH = 6.0
 
-M3 = 3.0
-M5 = 5.0
+M3 = 3.2
+M5 = 5.2
 
 FC_PITCH = 30.5 / 2 # FCno torituke iti
 
@@ -74,9 +74,8 @@ def create_dummy_motor():
 
 def create_body():
     MAIN_DEPTH = 3.0
-    BODY_R = 33.0
     body = base.create_cylinder( 
-        radius=BODY_R,
+        radius=24.5,
         depth=MAIN_DEPTH,
     )
     base.cut_cylinder(target=body, radius=M5 / 2, depth=MAIN_DEPTH * 2)
@@ -87,17 +86,19 @@ def create_body():
         (-FC_PITCH, -FC_PITCH),
     ]
     for i, (x, y) in enumerate(FC_HOLES):
-        base.cut_cylinder(
-            target=body, 
-            radius=M3 / 2, 
+        base.add_ring(
+            target=body,
+            outer_radius=M3 * 2,
+            inner_radius=M3 / 2,
             depth=MAIN_DEPTH,
             location=(x, y, 0.0),
         )
     body.rotation_euler[2] = math.pi / 4
     for i, (x, y) in enumerate(FC_HOLES):
-        base.cut_cylinder(
-            target=body, 
-            radius=M3 / 2, 
+        base.add_ring(
+            target=body,
+            outer_radius=M3 * 2,
+            inner_radius=M3 / 2,
             depth=MAIN_DEPTH,
             location=(x, y, 0.0),
         )
