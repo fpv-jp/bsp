@@ -39,14 +39,14 @@ WALL_hickness = 1.5  # 基本とする壁の厚み
 # TEST_CUT = True
 # TEST_CUT = False
 
-BUILD_TOP = True
-# BUILD_TOP = False
+# BUILD_TOP = True
+BUILD_TOP = False
 
 # BUILD_MIDDLE = True
 BUILD_MIDDLE = False
 
-# BUILD_BOTTOM = True
-BUILD_BOTTOM = False
+BUILD_BOTTOM = True
+# BUILD_BOTTOM = False
 
 
 # -------------------------------------------------------
@@ -130,24 +130,25 @@ def create_motor_arm():
 
     location = (0, MOTOR_PITCH, 16.0)  # アーム に対して モータ を取り付ける位置
 
-    # --- モータ ---
-    motor = create_motor(0)
-    motor.location = location
+    if BUILD_MIDDLE:
+        # --- モータ ---
+        motor = create_motor(0)
+        motor.location = location
 
-    # --- アーム と モータ を結合 ---
-    base.modifier_apply(obj=motor, target=arm, operation="UNION")
+        # --- アーム と モータ を結合 ---
+        base.modifier_apply(obj=motor, target=arm, operation="UNION")
 
-    # --- モータの 中をくり抜く ---
-    motor_inner = create_motor(WALL_hickness)
-    motor_inner.location = location
-    base.modifier_apply(obj=motor_inner, target=arm, operation="DIFFERENCE")
+        # --- モータの 中をくり抜く ---
+        motor_inner = create_motor(WALL_hickness)
+        motor_inner.location = location
+        base.modifier_apply(obj=motor_inner, target=arm, operation="DIFFERENCE")
 
     # --- モータ の下部をカット ---
     base.cut_cylinder(
         target=arm,
         radius=MOTOR_radius + WALL_hickness,
         depth=100.0,
-        location=(0.0, MOTOR_PITCH, 50.0 + 1.0),
+        location=(0.0, MOTOR_PITCH, 50.0 - 4.85),
         vertices=64,
     )
 
@@ -212,7 +213,7 @@ def create_body(sharpen):
 
 
 # --------------------------------------------
-# --- アッセンブリ -----------------------------
+# --- アッセンブリ ---------------------------
 # --------------------------------------------
 
 if BUILD_BOTTOM or BUILD_MIDDLE:
@@ -271,6 +272,10 @@ if BUILD_TOP or BUILD_MIDDLE:
 # そのままだと3Dプリンタのサイズを超えるので調整
 body.rotation_euler = (math.pi, 0, math.pi / 4)
 
+# -------------------------------------------------------
+# BUILD_TOP
+# -------------------------------------------------------
+
 if BUILD_TOP:
     depth = 54
     location = (0.0, 0.0, -8.0)
@@ -298,6 +303,10 @@ if BUILD_TOP:
     )
 
 
+# -------------------------------------------------------
+# BUILD_MIDDLE
+# -------------------------------------------------------
+
 if BUILD_MIDDLE:
     H = 80.0
     base.cut_cylinder(
@@ -313,4 +322,18 @@ if BUILD_MIDDLE:
         radius=BODY_radius + 1,
         depth=6 + H,
         location=(0.0, 0.0, H / 2 + 22.0),
+    )
+
+
+# -------------------------------------------------------
+# BUILD_BOTTOM
+# -------------------------------------------------------
+
+if BUILD_BOTTOM:
+    H = 250.0
+    base.cut_cylinder(
+        target=body,
+        radius=124.0,
+        depth=6 + H,
+        location=(0.0, 0.0, H / 2 - 70.0),
     )
