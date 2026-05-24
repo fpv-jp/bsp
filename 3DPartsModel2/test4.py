@@ -40,8 +40,12 @@ WALL_hickness = 1.5  # 基本とする壁の厚み
 # TEST_CUT = False
 BUILD_ARM = True
 
-BUILD_TOP = True
-BUILD_MIDDLE = False
+# BUILD_TOP = True
+BUILD_TOP = False
+
+BUILD_MIDDLE = True
+# BUILD_MIDDLE = False
+
 BUILD_BOTTOM = False
 
 
@@ -161,13 +165,9 @@ def create_body(sharpen):
     body = base.create_cylinder(
         radius=BODY_radius - 0.1 - sharpen,
         depth=CENTER_BODY_height,
-        location=(0.0, 0.0, 11.0),
+        location=(0.0, 0.0, (11.0) if sharpen > 0 else (11.05)),
         vertices=64,
     )
-
-    BUILD_TOP = True
-    BUILD_MIDDLE = True
-    BUILD_BOTTOM = True
 
     if BUILD_TOP or BUILD_MIDDLE:
         # --- ボディ 上部 ---
@@ -200,7 +200,7 @@ def create_body(sharpen):
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(3.0, 8.0, CENTER_BODY_height / 2),
+                    scale=(3.0, 8.0, CENTER_BODY_height / 4),
                     location=(0.0, y, 0.0),
                 )
     return body
@@ -249,6 +249,14 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
     y = DRONE_SIZE
     base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
     base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
+    # アームの骨格と重なる部分をカット
+    base.cut_cylinder(
+        target=body,
+        radius=1.5,
+        depth=BODY_radius * 2.1,
+        location=(0.0, 0.0, 25.0),
+        rotation=(math.pi / 2, 0, 0),
+    )
 
 # --- 確認のため前面カット ---
 # if TEST_CUT:
@@ -257,19 +265,17 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
 # そのままだと3Dプリンタのサイズを超えるので調整
 body.rotation_euler = (math.pi, 0, math.pi / 4)
 
-#if BUILD_TOP:
-
-#    H = 180.0
-#    base.cut_cylinder(
-#        target=body,
-#        radius=BODY_radius + 1,
-#        depth=6 + H,
-#        location=(0.0, 0.0, 40.0 - H / 2),
-#    )
+if BUILD_TOP:
+    H = 180.0
+    base.cut_cylinder(
+        target=body,
+        radius=BODY_radius + 1,
+        depth=6 + H,
+        location=(0.0, 0.0, -40.0 - H / 2),
+    )
 
 
 if BUILD_MIDDLE:
-
     H = 80.0
     base.cut_cylinder(
         target=body,
@@ -278,10 +284,10 @@ if BUILD_MIDDLE:
         location=(0.0, 0.0, -76.0 - H / 2),
     )
 
-    H = 140.0
+    H = 170.0
     base.cut_cylinder(
         target=body,
         radius=BODY_radius + 1,
         depth=6 + H,
-        location=(0.0, 0.0, 40.0 + H / 2),
+        location=(0.0, 0.0, 22.0 + H / 2),
     )
