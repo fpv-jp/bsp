@@ -131,6 +131,7 @@ def create_motor_arm():
     location = (0, MOTOR_PITCH, 16.0)  # アーム に対して モータ を取り付ける位置
 
     if BUILD_MIDDLE:
+
         # --- モータ ---
         motor = create_motor(0)
         motor.location = location
@@ -335,5 +336,5 @@ if BUILD_BOTTOM:
         target=body,
         radius=124.0,
         depth=6 + H,
-        location=(0.0, 0.0, H / 2 - 70.0),
+        location=(0.0, 0.0, H / 2 - 70.0 ),
     )
