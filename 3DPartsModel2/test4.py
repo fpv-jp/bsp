@@ -38,14 +38,14 @@ WALL_hickness = 1.5  # 基本とする壁の厚み
 
 # TEST_CUT = True
 # TEST_CUT = False
-BUILD_ARM = True
 
-# BUILD_TOP = True
-BUILD_TOP = False
+BUILD_TOP = True
+# BUILD_TOP = False
 
-BUILD_MIDDLE = True
-# BUILD_MIDDLE = False
+# BUILD_MIDDLE = True
+BUILD_MIDDLE = False
 
+# BUILD_BOTTOM = True
 BUILD_BOTTOM = False
 
 
@@ -193,9 +193,14 @@ def create_body(sharpen):
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(28.0, 10.0, CENTER_BODY_height / 2),
+                    scale=(28.0, 10.0, CENTER_BODY_height / 2.3),
                     location=(0.0, y, 0.0),
                 )
+        #                base.add_cube(
+        #                    target=body,
+        #                    scale=(3.2, 8.2, CENTER_BODY_height / 3),
+        #                    location=(0.0, y, 0.0),
+        #                )
         if BUILD_MIDDLE:
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
@@ -249,7 +254,8 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
     y = DRONE_SIZE
     base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
     base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
-    # アームの骨格と重なる部分をカット
+
+if BUILD_TOP or BUILD_MIDDLE:
     base.cut_cylinder(
         target=body,
         radius=1.5,
@@ -266,12 +272,29 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
 body.rotation_euler = (math.pi, 0, math.pi / 4)
 
 if BUILD_TOP:
-    H = 180.0
+    depth = 54
+    location = (0.0, 0.0, -8.0)
+    body_inner = base.create_cylinder(
+        radius=BODY_radius,
+        depth=depth,
+        location=location,
+        vertices=64,
+    )
+    base.cut_cylinder(
+        target=body_inner,
+        radius=BODY_radius - 0.15 - WALL_hickness,
+        depth=depth,
+        location=location,
+        vertices=64,
+    )
+    base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
+
+    H = 190.0
     base.cut_cylinder(
         target=body,
         radius=BODY_radius + 1,
         depth=6 + H,
-        location=(0.0, 0.0, -40.0 - H / 2),
+        location=(0.0, 0.0, -H / 2 - 35.0),
     )
 
 
@@ -289,5 +312,5 @@ if BUILD_MIDDLE:
         target=body,
         radius=BODY_radius + 1,
         depth=6 + H,
-        location=(0.0, 0.0, 22.0 + H / 2),
+        location=(0.0, 0.0, H / 2 + 22.0),
     )
