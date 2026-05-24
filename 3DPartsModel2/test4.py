@@ -26,16 +26,14 @@ INCH = 6.0 * 25.4 * adjustment  # 6inch
 
 MOTOR_PITCH = INCH / 2
 
-ARM_W = 14.5
-ARM_W = 12.0
+ARM_width = 12.0
 
-MOTOR_R = 38.2 / 2
-MOTOR_D = MOTOR_R * 8
+MOTOR_radius = 38.2 / 2
 
-BODY_R = 30.0
-BODY_D = BODY_R * 12
+BODY_radius = 30.0
+BODY_height = BODY_radius * 12
 
-WALL = 1.5  # 壁厚mm
+WALL_hickness = 1.5  # 基本とする壁の厚み
 
 TEST_CUT = True
 TEST_CUT = False
@@ -48,8 +46,8 @@ def create_motor(sharpen):
 
     # --- スピンナー(モータ直径より少し小さくする) ---
     motor = base.create_cylinder(
-        radius=MOTOR_R * 0.9 - sharpen,
-        depth=MOTOR_D,
+        radius=MOTOR_radius * 0.9 - sharpen,
+        depth=MOTOR_radius * 8,
         vertices=64,
     )
     # テーバをつける
@@ -67,9 +65,9 @@ def create_arm(sharpen):
     # --- アーム 中央 ---
     arm = base.create_cube(
         scale=(
-            ARM_W - sharpen2,
+            ARM_width - sharpen2,
             INCH / 1.75,
-            ARM_W * 3 - sharpen2,
+            ARM_width * 3 - sharpen2,
         ),
         location=(0.0, INCH / 4, 0.0),
     )
@@ -77,29 +75,29 @@ def create_arm(sharpen):
     # --- アーム 上部 ---
     arm_top = base.create_tear_beam(
         depth=INCH / 1.75,
-        width=ARM_W - sharpen2,
-        height=ARM_W * 3 - sharpen2,
+        width=ARM_width - sharpen2,
+        height=ARM_width * 3 - sharpen2,
         power=0.75,
-        location=(0.0, INCH / 4, -ARM_W * 1.2),
+        location=(0.0, INCH / 4, -ARM_width * 1.2),
     )
 
     # --- アーム 中央 上部 結合し傾けて少し上にずらす ---
     base.modifier_apply(obj=arm_top, target=arm, operation="UNION")
     arm.rotation_euler = (math.pi / 8, 0, 0)
-    arm.location = (0.0, 0.0, -ARM_W * 1.9)
+    arm.location = (0.0, 0.0, -ARM_width * 1.9)
 
     # --- 下を少しカット ---
     base.cut_cube(
         target=arm,
-        scale=(ARM_W, INCH, ARM_W * 4),
-        location=(0.0, INCH / 4, ARM_W * 1.75),
+        scale=(ARM_width, INCH, ARM_width * 4),
+        location=(0.0, INCH / 4, ARM_width * 1.75),
     )
 
     # --- アーム 下部 ---
     arm_bottom = base.create_tear_beam(
         depth=INCH / 2,
-        width=ARM_W - sharpen2,
-        height=ARM_W * 3 - sharpen2,
+        width=ARM_width - sharpen2,
+        height=ARM_width * 3 - sharpen2,
         power=0.75,
         location=(0.0, INCH / 4, 0.0),
     )
@@ -117,7 +115,7 @@ def create_motor_arm():
 
     # --- アーム(中をくり抜く) ---
     arm = create_arm(0)
-    arm_inner = create_arm(WALL)
+    arm_inner = create_arm(WALL_hickness)
     base.modifier_apply(obj=arm_inner, target=arm, operation="DIFFERENCE")
 
     location = (0, MOTOR_PITCH, 16.0)  # アーム に対して モータ を取り付ける位置
@@ -130,14 +128,14 @@ def create_motor_arm():
     base.modifier_apply(obj=motor, target=arm, operation="UNION")
 
     # --- モータの 中をくり抜く ---
-    motor_inner = create_motor(WALL)
+    motor_inner = create_motor(WALL_hickness)
     motor_inner.location = location
     base.modifier_apply(obj=motor_inner, target=arm, operation="DIFFERENCE")
 
     # --- モータ の下部をカット ---
     base.cut_cylinder(
         target=arm,
-        radius=MOTOR_R + WALL,
+        radius=MOTOR_radius + WALL_hickness,
         depth=100.0,
         location=(0.0, MOTOR_PITCH, 50.0),
         vertices=64,
@@ -153,17 +151,17 @@ def create_body(sharpen):
 
     # --- ボディ 中央 ---
     body = base.create_cylinder(
-        radius=BODY_R - 0.1 - sharpen, depth=BODY_D / 2.5, location=(0.0, 0.0, 11.0), vertices=64
+        radius=BODY_radius - 0.1 - sharpen, depth=BODY_height / 2.5, location=(0.0, 0.0, 11.0), vertices=64
     )
 
     # --- ボディ 上部 ---
     body_top = base.create_tear_body(
-        radius=BODY_R - sharpen, depth=BODY_D, power=0.66, smooth=False
+        radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, smooth=False
     )
 
     # --- ボディ 下部 ---
     body_bottom = base.create_tear_body(
-        radius=BODY_R - sharpen, depth=BODY_D, power=0.66, peak=0.75, smooth=False
+        radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, peak=0.75, smooth=False
     )
 
     # --- ボディ を結合 ---
@@ -191,7 +189,7 @@ body = create_body(0)
 # --- ボディ の下部をカット ---
 base.cut_cylinder(
     target=body,
-    radius=BODY_R,
+    radius=BODY_radius,
     depth=100.0,
     location=(0.0, 0.0, 190.0),
 )
@@ -203,26 +201,26 @@ base.modifier_apply(obj=motor_arm3, target=body, operation="UNION")
 base.modifier_apply(obj=motor_arm4, target=body, operation="UNION")
 
 # --- ボディ を中空化 ---
-body_inner = create_body(WALL)
+body_inner = create_body(WALL_hickness)
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
 # パーツに分けた時の止め合わせを追加
 location = (0.0, 0.0, 11.0)
-depth = BODY_D / 2.5
+depth = BODY_height / 2.5
 base.add_cube(
     target=body,
     location=(location),
-    scale=(BODY_R * 2 - 0.5, 3.0, depth),
+    scale=(BODY_radius * 2 - 0.5, 3.0, depth),
 )
 base.add_cube(
     target=body,
     location=(location),
-    scale=(3.0, BODY_R * 2 - 0.5, depth),
+    scale=(3.0, BODY_radius * 2 - 0.5, depth),
 )
 base.cut_cylinder(
     target=body,
     location=(location),
-    radius=BODY_R - 3.5,
+    radius=BODY_radius - 3.5,
     depth=depth + 0.1,
     vertices=128,
 )
@@ -232,12 +230,12 @@ location = (0.0, 0.0, 55.0)
 base.cut_cube(
     target=body,
     location=(location),
-    scale=(ARM_W + 0.1, INCH, 6.1),
+    scale=(ARM_width + 0.1, INCH, 6.1),
 )
 base.cut_cube(
     target=body,
     location=(location),
-    scale=(INCH, ARM_W + 0.1, 6.1),
+    scale=(INCH, ARM_width + 0.1, 6.1),
 )
 
 # --- 確認のため前面カット ---
