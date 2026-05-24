@@ -17,20 +17,17 @@ base.init()
 M3 = 3.2
 M5 = 5.2
 
-adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
-
-MAIN_DEPTH = 6.0
-
 PROP_INCH = 6 * 25.4  # プロペラ(6inch)
+
+adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
 ARM_length = PROP_INCH / 2 * adjustment  # モータとボディのピッチ/アームの長さ
 ARM_width = 12.0  # アームの幅
 
-MOTOR_PITCH = 19.0 / 2  # モータの取り付け穴ピッチ
-
 ARM_THICKNESS = 6.0  # アームの太さ
 PLATE_THICKNESS = 3.0  # 天板/底板の厚み
 
+MOTOR_PITCH = 19.0 / 2  # モータの取り付け穴ピッチ
 FC_PITCH = 30.5 / 2  # FC/ESCの取り付けピンのピッチ
 
 
@@ -38,7 +35,7 @@ FC_PITCH = 30.5 / 2  # FC/ESCの取り付けピンのピッチ
 def create_dummy_motor():
     PROP_DEPTH = 9.0
 
-    MOTOR_SIZE = 37.0
+    MOTOR_SIZE = 38.5
 
     MOTOR_Z1 = 45.30
     MOTOR_Z2 = 39.10
@@ -75,25 +72,24 @@ def create_dummy_motor():
     )
 
     # モータの位置調整
-    m.location = (0.0, 0.0, -(MOTOR_Z1 + MAIN_DEPTH) / 2)
+    m.location = (0.0, 0.0, -(MOTOR_Z1 + ARM_THICKNESS) / 2)
     # m.rotation_euler[0] = math.pi
     return m
 
 
 # --------------------------------------
-# ボディプレート
+# センタープレート
 # --------------------------------------
-def create_body():
+def create_plate():
 
     # 基板プレート
-    MAIN_DEPTH = 3.0
     body = base.create_cylinder(
         radius=24.5,
-        depth=MAIN_DEPTH,
+        depth=PLATE_THICKNESS,
     )
 
     # 中央穴(φ5)
-    base.cut_cylinder(target=body, radius=M5 / 2, depth=MAIN_DEPTH * 2)
+    base.cut_cylinder(target=body, radius=M5 / 2, depth=PLATE_THICKNESS * 2)
 
     FC_HOLES = [
         (FC_PITCH, FC_PITCH),
@@ -108,7 +104,7 @@ def create_body():
             target=body,
             outer_radius=M3 * 2,
             inner_radius=M3 / 2,
-            depth=MAIN_DEPTH,
+            depth=PLATE_THICKNESS,
             location=(x, y, 0.0),
         )
 
@@ -118,7 +114,7 @@ def create_body():
             target=body,
             outer_radius=M3 * 2,
             inner_radius=M3 / 2,
-            depth=MAIN_DEPTH,
+            depth=PLATE_THICKNESS,
             location=(x, y, 0.0),
         )
     return body
@@ -133,7 +129,7 @@ motor = base.create_cube(
     scale=(
         MOTOR_PITCH * 2.08,
         MOTOR_PITCH * 2.08,
-        MAIN_DEPTH,
+        ARM_THICKNESS,
     )
 )
 
@@ -143,12 +139,12 @@ base.modifier_apply(obj=create_dummy_motor(), target=motor, operation="UNION")
 # アーム を取り付け ----------------------------
 base.add_cube(
     target=motor,
-    scale=(ARM_width, ARM_length, MAIN_DEPTH),
+    scale=(ARM_width, ARM_length, ARM_THICKNESS),
     location=(0.0, ARM_length / 2, 0.0),
 )
 # モータの回転軸と干渉する部分をカット ----------------------------
 base.cut_cylinder(
-    target=motor, radius=M5 / 2, depth=MAIN_DEPTH * 2, location=(0.0, ARM_length, 0.0)
+    target=motor, radius=M5 / 2, depth=ARM_THICKNESS * 2, location=(0.0, ARM_length, 0.0)
 )
 
 motor.rotation_euler[2] = math.pi / 4
@@ -166,7 +162,7 @@ for i, (x, y) in enumerate(MOTOR_HOLES):
         target=motor,
         outer_radius=M3 * 1.5,
         inner_radius=M3 / 2,
-        depth=MAIN_DEPTH,
+        depth=ARM_THICKNESS,
         location=(x, y, 0.0),
         vertices=64,
     )
@@ -181,7 +177,7 @@ motor.rotation_euler[2] = math.pi / 4
 
 # アーム と ボディプレート の取り付け穴 ----------------------------
 base.cut_cylinder(
-    target=motor, radius=M3 / 2, depth=MAIN_DEPTH * 2, location=(FC_PITCH, -FC_PITCH, 0.0)
+    target=motor, radius=M3 / 2, depth=ARM_THICKNESS * 2, location=(FC_PITCH, -FC_PITCH, 0.0)
 )
 
 # アーム 同士が干渉する角をカット ----------------------------
@@ -194,7 +190,7 @@ for i, (x) in enumerate([math.pi / 2, math.pi, -math.pi / 2]):
 motor.rotation_euler[2] = 0
 
 # 天板 ----------------------------
-top = create_body()
+top = create_plate()
 top.location = (0.0, 0.0, 3.0 + 1.5)
 
 # 底板を複製 ----------------------------
