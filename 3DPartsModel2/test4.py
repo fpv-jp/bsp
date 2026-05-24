@@ -36,9 +36,14 @@ BODY_height = BODY_radius * 12  # ボディの高さ
 
 WALL_hickness = 1.5  # 基本とする壁の厚み
 
-#TEST_CUT = True
-#TEST_CUT = False
-BUILD_CNTER = True
+# TEST_CUT = True
+# TEST_CUT = False
+BUILD_ARM = True
+
+BUILD_TOP = True
+BUILD_MIDDLE = False
+BUILD_BOTTOM = False
+
 
 # -------------------------------------------------------
 # モータ
@@ -149,9 +154,9 @@ def create_motor_arm():
 # ボディ
 # -------------------------------------------------------
 def create_body(sharpen):
-    
+
     CENTER_BODY_height = BODY_height / 2.5
-    
+
     # --- ボディ 中央 ---
     body = base.create_cylinder(
         radius=BODY_radius - 0.1 - sharpen,
@@ -159,37 +164,45 @@ def create_body(sharpen):
         location=(0.0, 0.0, 11.0),
         vertices=64,
     )
-    
-    # --- ボディ 上部 ---
-    body_top = base.create_tear_body(
-        radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, smooth=False
-    )
 
-    # --- ボディ 下部 ---
-    body_bottom = base.create_tear_body(
-        radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, peak=0.75, smooth=False
-    )
+    BUILD_TOP = True
+    BUILD_MIDDLE = True
+    BUILD_BOTTOM = True
+
+    if BUILD_TOP or BUILD_MIDDLE:
+        # --- ボディ 上部 ---
+        body_top = base.create_tear_body(
+            radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, smooth=False
+        )
+
+    if BUILD_BOTTOM or BUILD_MIDDLE:
+        # --- ボディ 下部 ---
+        body_bottom = base.create_tear_body(
+            radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, peak=0.75, smooth=False
+        )
 
     # --- ボディ を結合 ---
-    base.modifier_apply(obj=body_top, target=body, operation="UNION")
-    base.modifier_apply(obj=body_bottom, target=body, operation="UNION")
-    
+    if BUILD_TOP or BUILD_MIDDLE:
+        base.modifier_apply(obj=body_top, target=body, operation="UNION")
+    if BUILD_BOTTOM or BUILD_MIDDLE:
+        base.modifier_apply(obj=body_bottom, target=body, operation="UNION")
+
     # パーツに分けた時の止め合わせを追加
     if sharpen != 0:
-        if BUILD_CNTER:
+        if BUILD_TOP:
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
-                    target=body, 
-                    scale=(3.0, 8.0, CENTER_BODY_height/2),
-                    location=(0.0, y, -CENTER_BODY_height/2),
+                    target=body,
+                    scale=(28.0, 10.0, CENTER_BODY_height / 2),
+                    location=(0.0, y, 0.0),
                 )
-#            base.cut_cube(
-#                target=body, 
-#                scale=(28.0, 10.0, CENTER_BODY_height/2),
-#                location=(0.0,y, -CENTER_BODY_height/2),
-#            )
-
-
+        if BUILD_MIDDLE:
+            for i, (y) in enumerate([BODY_radius, -BODY_radius]):
+                base.cut_cube(
+                    target=body,
+                    scale=(3.0, 8.0, CENTER_BODY_height / 2),
+                    location=(0.0, y, 0.0),
+                )
     return body
 
 
@@ -197,14 +210,15 @@ def create_body(sharpen):
 # --- アッセンブリ -----------------------------
 # --------------------------------------------
 
-# アーム + モータ
-motor_arm1 = create_motor_arm()
-motor_arm1.location[2] = ARM_position  # ボディに対して取り付ける位置を調整
+if BUILD_BOTTOM or BUILD_MIDDLE:
+    # アーム + モータ
+    motor_arm1 = create_motor_arm()
+    motor_arm1.location[2] = ARM_position  # ボディに対して取り付ける位置を調整
 
-# 他の アーム + モータ をコピー
-motor_arm2 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, math.pi))
-motor_arm3 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, math.pi / 2))
-motor_arm4 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, -math.pi / 2))
+    # 他の アーム + モータ をコピー
+    motor_arm2 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, math.pi))
+    motor_arm3 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, math.pi / 2))
+    motor_arm4 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, -math.pi / 2))
 
 # --- ボディ ---
 body = create_body(0)
@@ -217,44 +231,57 @@ base.cut_cylinder(
     location=(0.0, 0.0, 190.0),
 )
 
-# --- ボディ に腕を結合 ---
-base.modifier_apply(obj=motor_arm1, target=body, operation="UNION")
-base.modifier_apply(obj=motor_arm2, target=body, operation="UNION")
-base.modifier_apply(obj=motor_arm3, target=body, operation="UNION")
-base.modifier_apply(obj=motor_arm4, target=body, operation="UNION")
+if BUILD_BOTTOM or BUILD_MIDDLE:
+    # --- ボディ に腕を結合 ---
+    base.modifier_apply(obj=motor_arm1, target=body, operation="UNION")
+    base.modifier_apply(obj=motor_arm2, target=body, operation="UNION")
+    base.modifier_apply(obj=motor_arm3, target=body, operation="UNION")
+    base.modifier_apply(obj=motor_arm4, target=body, operation="UNION")
 
 # --- ボディ を中空化 ---
 body_inner = create_body(WALL_hickness)
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-# アームの骨格と重なる部分をカット
-location = (0.0, 0.0, 21.0 + ARM_position)
-x = ARM_width + 0.1
-y = DRONE_SIZE
-base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
-base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
+if BUILD_BOTTOM or BUILD_MIDDLE:
+    # アームの骨格と重なる部分をカット
+    location = (0.0, 0.0, 21.0 + ARM_position)
+    x = ARM_width + 0.1
+    y = DRONE_SIZE
+    base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
+    base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
 
 # --- 確認のため前面カット ---
-#if TEST_CUT:
+# if TEST_CUT:
 #    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
 
 # そのままだと3Dプリンタのサイズを超えるので調整
 body.rotation_euler = (math.pi, 0, math.pi / 4)
 
+#if BUILD_TOP:
 
-if BUILD_CNTER:
+#    H = 180.0
+#    base.cut_cylinder(
+#        target=body,
+#        radius=BODY_radius + 1,
+#        depth=6 + H,
+#        location=(0.0, 0.0, 40.0 - H / 2),
+#    )
+
+
+if BUILD_MIDDLE:
+
     H = 80.0
-
     base.cut_cylinder(
         target=body,
         radius=93.5,
         depth=6 + H,
         location=(0.0, 0.0, -76.0 - H / 2),
     )
-    
+
+    H = 140.0
     base.cut_cylinder(
         target=body,
         radius=BODY_radius + 1,
         depth=6 + H,
-        location=(0.0, 0.0, 105.0 + H / 2),
+        location=(0.0, 0.0, 40.0 + H / 2),
     )
