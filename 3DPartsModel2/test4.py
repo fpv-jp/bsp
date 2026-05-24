@@ -196,16 +196,16 @@ def create_body(sharpen):
                     scale=(28.0, 10.0, CENTER_BODY_height / 2.3),
                     location=(0.0, y, 0.0),
                 )
-        #                base.add_cube(
-        #                    target=body,
-        #                    scale=(3.2, 8.2, CENTER_BODY_height / 3),
-        #                    location=(0.0, y, 0.0),
-        #                )
+                base.add_cube(
+                    target=body,
+                    scale=(3.2, 6.7, CENTER_BODY_height / 2),
+                    location=(0.0, y, 17.3),
+                )
         if BUILD_MIDDLE:
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(3.0, 8.0, CENTER_BODY_height / 4),
+                    scale=(3.0, 6.5, CENTER_BODY_height / 4),
                     location=(0.0, y, 0.0),
                 )
     return body
