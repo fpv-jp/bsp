@@ -13,19 +13,17 @@ import base
 
 base.init()
 
+# ネジ(φ)
+M3 = 3.2
+M5 = 5.2
+
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
-
-INCH = 6 * 25.4 * adjustment  # 6.5inch
-
-ARM_L = INCH / 2
 
 MAIN_DEPTH = 6.0
 
 PROP_INCH = 6 * 25.4  # プロペラ(6inch)
 
-DRONE_SIZE = 6 * 25.4 * adjustment  # 6inch
-
-MOTOR_PITCH = DRONE_SIZE / 2  # モータとボディのピッチ/アームの長さ
+ARM_length = PROP_INCH / 2 * adjustment  # モータとボディのピッチ/アームの長さ
 ARM_width = 12.0  # アームの幅
 
 MOTOR_PITCH = 19.0 / 2  # モータの取り付け穴ピッチ
@@ -33,15 +31,11 @@ MOTOR_PITCH = 19.0 / 2  # モータの取り付け穴ピッチ
 ARM_THICKNESS = 6.0  # アームの太さ
 PLATE_THICKNESS = 3.0  # 天板/底板の厚み
 
-# ネジ(φ)
-M3 = 3.2
-M5 = 5.2
-
 FC_PITCH = 30.5 / 2  # FC/ESCの取り付けピンのピッチ
+
 
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def create_dummy_motor():
-    PROP_INCH = 6 * 25.4  # 6inch
     PROP_DEPTH = 9.0
 
     MOTOR_SIZE = 37.0
@@ -149,11 +143,13 @@ base.modifier_apply(obj=create_dummy_motor(), target=motor, operation="UNION")
 # アーム を取り付け ----------------------------
 base.add_cube(
     target=motor,
-    scale=(ARM_width, ARM_L, MAIN_DEPTH),
-    location=(0.0, ARM_L / 2, 0.0),
+    scale=(ARM_width, ARM_length, MAIN_DEPTH),
+    location=(0.0, ARM_length / 2, 0.0),
 )
 # モータの回転軸と干渉する部分をカット ----------------------------
-base.cut_cylinder(target=motor, radius=M5 / 2, depth=MAIN_DEPTH * 2, location=(0.0, ARM_L, 0.0))
+base.cut_cylinder(
+    target=motor, radius=M5 / 2, depth=MAIN_DEPTH * 2, location=(0.0, ARM_length, 0.0)
+)
 
 motor.rotation_euler[2] = math.pi / 4
 
@@ -177,7 +173,7 @@ for i, (x, y) in enumerate(MOTOR_HOLES):
 
 # 中心を変える ----------------------------
 motor.rotation_euler[2] = 0
-motor.location = (0.0, -ARM_L, 0.0)
+motor.location = (0.0, -ARM_length, 0.0)
 base.set_origin(motor, (0.0, 0.0, 0.0))
 
 # 45° 回転 ----------------------------
