@@ -18,19 +18,8 @@ adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 INCH = 6 * 25.4 * adjustment  # 6.5inch
 
 ARM_L = INCH / 2
-ARM_W = 12.0
-
-MOTOR_PITCH = 19.0 / 2
 
 MAIN_DEPTH = 6.0
-
-M3 = 3.2
-M5 = 5.2
-
-FC_PITCH = 30.5 / 2  # FCno torituke iti
-
-
-adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
 PROP_INCH = 6 * 25.4  # プロペラ(6inch)
 
@@ -49,7 +38,6 @@ M3 = 3.2
 M5 = 5.2
 
 FC_PITCH = 30.5 / 2  # FC/ESCの取り付けピンのピッチ
-
 
 # 参考：モータ+プロペラ<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def create_dummy_motor():
@@ -161,7 +149,7 @@ base.modifier_apply(obj=create_dummy_motor(), target=motor, operation="UNION")
 # アーム を取り付け ----------------------------
 base.add_cube(
     target=motor,
-    scale=(ARM_W, ARM_L, MAIN_DEPTH),
+    scale=(ARM_width, ARM_L, MAIN_DEPTH),
     location=(0.0, ARM_L / 2, 0.0),
 )
 # モータの回転軸と干渉する部分をカット ----------------------------
