@@ -22,16 +22,17 @@ if _test5:
 
 adjustment = 1.47  # アームの長さ/モータ位置を調整する倍率
 
-INCH = 6.0 * 25.4 * adjustment  # 6inch
+DRONE_SIZE = 6.0 * 25.4 * adjustment  # 6inch
 
-MOTOR_PITCH = INCH / 2
+MOTOR_PITCH = DRONE_SIZE / 2  # モータとボディのピッチ/アームの長さ
 
-ARM_width = 12.0
+ARM_width = 12.0  # アームの幅
+ARM_position = 55.0  # ボディに対してアームを取り付ける位置
 
-MOTOR_radius = 38.2 / 2
+MOTOR_radius = 38.2 / 2  # モータの半径
 
-BODY_radius = 30.0
-BODY_height = BODY_radius * 12
+BODY_radius = 30.0  # ボディの半径
+BODY_height = BODY_radius * 12  # ボディの高さ
 
 WALL_hickness = 1.5  # 基本とする壁の厚み
 
@@ -66,19 +67,19 @@ def create_arm(sharpen):
     arm = base.create_cube(
         scale=(
             ARM_width - sharpen2,
-            INCH / 1.75,
+            DRONE_SIZE / 1.75,
             ARM_width * 3 - sharpen2,
         ),
-        location=(0.0, INCH / 4, 0.0),
+        location=(0.0, DRONE_SIZE / 4, 0.0),
     )
 
     # --- アーム 上部 ---
     arm_top = base.create_tear_beam(
-        depth=INCH / 1.75,
+        depth=DRONE_SIZE / 1.75,
         width=ARM_width - sharpen2,
         height=ARM_width * 3 - sharpen2,
         power=0.75,
-        location=(0.0, INCH / 4, -ARM_width * 1.2),
+        location=(0.0, DRONE_SIZE / 4, -ARM_width * 1.2),
     )
 
     # --- アーム 中央 上部 結合し傾けて少し上にずらす ---
@@ -89,17 +90,17 @@ def create_arm(sharpen):
     # --- 下を少しカット ---
     base.cut_cube(
         target=arm,
-        scale=(ARM_width, INCH, ARM_width * 4),
-        location=(0.0, INCH / 4, ARM_width * 1.75),
+        scale=(ARM_width, DRONE_SIZE, ARM_width * 4),
+        location=(0.0, DRONE_SIZE / 4, ARM_width * 1.75),
     )
 
     # --- アーム 下部 ---
     arm_bottom = base.create_tear_beam(
-        depth=INCH / 2,
+        depth=DRONE_SIZE / 2,
         width=ARM_width - sharpen2,
         height=ARM_width * 3 - sharpen2,
         power=0.75,
-        location=(0.0, INCH / 4, 0.0),
+        location=(0.0, DRONE_SIZE / 4, 0.0),
     )
 
     # --- アーム 中央 上部 と 下部 を 結合 ---
@@ -151,7 +152,10 @@ def create_body(sharpen):
 
     # --- ボディ 中央 ---
     body = base.create_cylinder(
-        radius=BODY_radius - 0.1 - sharpen, depth=BODY_height / 2.5, location=(0.0, 0.0, 11.0), vertices=64
+        radius=BODY_radius - 0.1 - sharpen,
+        depth=BODY_height / 2.5,
+        location=(0.0, 0.0, 11.0),
+        vertices=64,
     )
 
     # --- ボディ 上部 ---
@@ -176,7 +180,7 @@ def create_body(sharpen):
 
 # アーム + モータ
 motor_arm1 = create_motor_arm()
-motor_arm1.location = (0.0, 0.0, 55)  # ボディに対して取り付ける位置を調整
+motor_arm1.location[2] = ARM_position  # ボディに対して取り付ける位置を調整
 
 # 他の アーム + モータ をコピー
 motor_arm2 = base.copy(motor_arm1, rotation=(math.pi / 8, 0, math.pi))
@@ -206,7 +210,7 @@ base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
 # パーツに分けた時の止め合わせを追加
 location = (0.0, 0.0, 11.0)
-depth = BODY_height / 2.5
+depth = BODY_height / 4
 base.add_cube(
     target=body,
     location=(location),
@@ -226,16 +230,16 @@ base.cut_cylinder(
 )
 
 # アームの骨格と重なる部分をカット
-location = (0.0, 0.0, 55.0)
+location = (0.0, 0.0, 21.0 + ARM_position)
 base.cut_cube(
     target=body,
     location=(location),
-    scale=(ARM_width + 0.1, INCH, 6.1),
+    scale=(ARM_width + 0.1, DRONE_SIZE, 6.1),
 )
 base.cut_cube(
     target=body,
     location=(location),
-    scale=(INCH, ARM_width + 0.1, 6.1),
+    scale=(DRONE_SIZE, ARM_width + 0.1, 6.1),
 )
 
 # --- 確認のため前面カット ---
