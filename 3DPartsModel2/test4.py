@@ -36,9 +36,9 @@ BODY_height = BODY_radius * 12  # ボディの高さ
 
 WALL_hickness = 1.5  # 基本とする壁の厚み
 
-TEST_CUT = True
-TEST_CUT = False
-
+#TEST_CUT = True
+#TEST_CUT = False
+BUILD_CNTER = True
 
 # -------------------------------------------------------
 # モータ
@@ -138,7 +138,7 @@ def create_motor_arm():
         target=arm,
         radius=MOTOR_radius + WALL_hickness,
         depth=100.0,
-        location=(0.0, MOTOR_PITCH, 50.0),
+        location=(0.0, MOTOR_PITCH, 50.0 + 1.0),
         vertices=64,
     )
 
@@ -149,15 +149,17 @@ def create_motor_arm():
 # ボディ
 # -------------------------------------------------------
 def create_body(sharpen):
-
+    
+    CENTER_BODY_height = BODY_height / 2.5
+    
     # --- ボディ 中央 ---
     body = base.create_cylinder(
         radius=BODY_radius - 0.1 - sharpen,
-        depth=BODY_height / 2.5,
+        depth=CENTER_BODY_height,
         location=(0.0, 0.0, 11.0),
         vertices=64,
     )
-
+    
     # --- ボディ 上部 ---
     body_top = base.create_tear_body(
         radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, smooth=False
@@ -171,6 +173,23 @@ def create_body(sharpen):
     # --- ボディ を結合 ---
     base.modifier_apply(obj=body_top, target=body, operation="UNION")
     base.modifier_apply(obj=body_bottom, target=body, operation="UNION")
+    
+    # パーツに分けた時の止め合わせを追加
+    if sharpen != 0:
+        if BUILD_CNTER:
+            for i, (y) in enumerate([BODY_radius, -BODY_radius]):
+                base.cut_cube(
+                    target=body, 
+                    scale=(3.0, 8.0, CENTER_BODY_height/2),
+                    location=(0.0, y, -CENTER_BODY_height/2),
+                )
+#            base.cut_cube(
+#                target=body, 
+#                scale=(28.0, 10.0, CENTER_BODY_height/2),
+#                location=(0.0,y, -CENTER_BODY_height/2),
+#            )
+
+
     return body
 
 
@@ -208,43 +227,34 @@ base.modifier_apply(obj=motor_arm4, target=body, operation="UNION")
 body_inner = create_body(WALL_hickness)
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-# パーツに分けた時の止め合わせを追加
-location = (0.0, 0.0, 11.0)
-depth = BODY_height / 4
-base.add_cube(
-    target=body,
-    location=(location),
-    scale=(BODY_radius * 2 - 0.5, 3.0, depth),
-)
-base.add_cube(
-    target=body,
-    location=(location),
-    scale=(3.0, BODY_radius * 2 - 0.5, depth),
-)
-base.cut_cylinder(
-    target=body,
-    location=(location),
-    radius=BODY_radius - 3.5,
-    depth=depth + 0.1,
-    vertices=128,
-)
-
 # アームの骨格と重なる部分をカット
 location = (0.0, 0.0, 21.0 + ARM_position)
-base.cut_cube(
-    target=body,
-    location=(location),
-    scale=(ARM_width + 0.1, DRONE_SIZE, 6.1),
-)
-base.cut_cube(
-    target=body,
-    location=(location),
-    scale=(DRONE_SIZE, ARM_width + 0.1, 6.1),
-)
+x = ARM_width + 0.1
+y = DRONE_SIZE
+base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
+base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
 
 # --- 確認のため前面カット ---
-if TEST_CUT:
-    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+#if TEST_CUT:
+#    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
 
 # そのままだと3Dプリンタのサイズを超えるので調整
 body.rotation_euler = (math.pi, 0, math.pi / 4)
+
+
+if BUILD_CNTER:
+    H = 80.0
+
+    base.cut_cylinder(
+        target=body,
+        radius=93.5,
+        depth=6 + H,
+        location=(0.0, 0.0, -76.0 - H / 2),
+    )
+    
+    base.cut_cylinder(
+        target=body,
+        radius=BODY_radius + 1,
+        depth=6 + H,
+        location=(0.0, 0.0, 105.0 + H / 2),
+    )
