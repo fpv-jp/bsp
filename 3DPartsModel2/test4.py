@@ -192,13 +192,13 @@ def create_body(sharpen):
                 # 取り付け部分
                 base.cut_cube(
                     target=body,
-                    scale=(28.0, 10.0, CENTER_BODY_height / 2.3),
+                    scale=(28.0, 8.0, CENTER_BODY_height / 2.3),
                     location=(0.0, y, 0.0),
                 )
                 # ボディ 中央との凹
                 base.add_cube(
                     target=body,
-                    scale=(3.2, 6.7, CENTER_BODY_height / 2),
+                    scale=(3.2, 5.7, CENTER_BODY_height / 2),
                     location=(0.0, y, 17.3),
                 )
         if BUILD_MIDDLE:
@@ -206,7 +206,7 @@ def create_body(sharpen):
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(3.0, 6.5, CENTER_BODY_height / 4),
+                    scale=(3.0, 5.5, CENTER_BODY_height / 4),
                     location=(0.0, y, 0.0),
                 )
             # ボディ 下部との凸
@@ -214,7 +214,7 @@ def create_body(sharpen):
             for i, (x) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(6.5, 3.0, CENTER_BODY_height / 4),
+                    scale=(5.5, 3.0, CENTER_BODY_height / 4),
                     location=(x, 0.0, 54.0),
                 )
             body.rotation_euler = (0, 0, 0)
@@ -224,13 +224,13 @@ def create_body(sharpen):
                 # 取り付け部分
                 base.cut_cube(
                     target=body,
-                    scale=(10.0, 28.0, CENTER_BODY_height / 2.2),
+                    scale=(8.0, 28.0, CENTER_BODY_height / 2.2),
                     location=(x, 0.0, 56.0),
                 )
                 # ボディ 中央との凹
                 base.add_cube(
                     target=body,
-                    scale=(6.7, 3.2, CENTER_BODY_height / 2),
+                    scale=(5.7, 3.2, CENTER_BODY_height / 2),
                     location=(x, 0.0, 36.8),
                 )
             body.rotation_euler = (0, 0, 0)
