@@ -36,13 +36,10 @@ BODY_height = BODY_radius * 12  # ボディの高さ
 
 WALL_hickness = 1.5  # 基本とする壁の厚み
 
-# TEST_CUT = True
-# TEST_CUT = False
-
-# BUILD_TOP = True
+BUILD_TOP = True
 BUILD_TOP = False
 
-# BUILD_MIDDLE = True
+BUILD_MIDDLE = True
 BUILD_MIDDLE = False
 
 BUILD_BOTTOM = True
@@ -131,7 +128,6 @@ def create_motor_arm():
     location = (0, MOTOR_PITCH, 16.0)  # アーム に対して モータ を取り付ける位置
 
     if BUILD_MIDDLE:
-
         # --- モータ ---
         motor = create_motor(0)
         motor.location = location
@@ -193,23 +189,51 @@ def create_body(sharpen):
     if sharpen != 0:
         if BUILD_TOP:
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
+                # 取り付け部分
                 base.cut_cube(
                     target=body,
                     scale=(28.0, 10.0, CENTER_BODY_height / 2.3),
                     location=(0.0, y, 0.0),
                 )
+                # ボディ 中央との凹
                 base.add_cube(
                     target=body,
                     scale=(3.2, 6.7, CENTER_BODY_height / 2),
                     location=(0.0, y, 17.3),
                 )
         if BUILD_MIDDLE:
+            # ボディ 上部との凸
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
                     scale=(3.0, 6.5, CENTER_BODY_height / 4),
                     location=(0.0, y, 0.0),
                 )
+            # ボディ 下部との凸
+            body.rotation_euler = (0, 0, math.pi / 4)
+            for i, (x) in enumerate([BODY_radius, -BODY_radius]):
+                base.cut_cube(
+                    target=body,
+                    scale=(6.5, 3.0, CENTER_BODY_height / 4),
+                    location=(x, 0.0, 54.0),
+                )
+            body.rotation_euler = (0, 0, 0)
+        if BUILD_BOTTOM:
+            body.rotation_euler = (0, 0, math.pi / 4)
+            for i, (x) in enumerate([BODY_radius, -BODY_radius]):
+                # 取り付け部分
+                base.cut_cube(
+                    target=body,
+                    scale=(10.0, 28.0, CENTER_BODY_height / 2.2),
+                    location=(x, 0.0, 56.0),
+                )
+                # ボディ 中央との凹
+                base.add_cube(
+                    target=body,
+                    scale=(6.7, 3.2, CENTER_BODY_height / 2),
+                    location=(x, 0.0, 38.8),
+                )
+            body.rotation_euler = (0, 0, 0)
     return body
 
 
@@ -249,22 +273,34 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
 body_inner = create_body(WALL_hickness)
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
+# --- ボディ 中央と上部の共通ネジ穴
+if BUILD_TOP or BUILD_MIDDLE:
+    base.cut_cylinder(
+        target=body,
+        radius=1.6,
+        depth=BODY_radius * 2.1,
+        location=(0.0, 0.0, 24.5),
+        rotation=(math.pi / 2, 0, 0),
+    )
+
+# --- ボディ 中央と下部の共通ネジ穴
 if BUILD_BOTTOM or BUILD_MIDDLE:
-    # アームの骨格と重なる部分をカット
+    body.rotation_euler = (0, 0, math.pi / 4)
+    base.cut_cylinder(
+        target=body,
+        radius=1.6,
+        depth=BODY_radius * 2.1,
+        location=(0.0, 0.0, 30.0),
+        rotation=(0, math.pi / 2, 0),
+    )
+    body.rotation_euler = (0, 0, 0)
+
+    # アームのボディが重なる部分をカット
     location = (0.0, 0.0, 21.0 + ARM_position)
     x = ARM_width + 0.1
     y = DRONE_SIZE
     base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
     base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
-
-if BUILD_TOP or BUILD_MIDDLE:
-    base.cut_cylinder(
-        target=body,
-        radius=1.5,
-        depth=BODY_radius * 2.1,
-        location=(0.0, 0.0, 25.0),
-        rotation=(math.pi / 2, 0, 0),
-    )
 
 # --- 確認のため前面カット ---
 # if TEST_CUT:
@@ -278,6 +314,17 @@ body.rotation_euler = (math.pi, 0, math.pi / 4)
 # -------------------------------------------------------
 
 if BUILD_TOP:
+
+    # 不要な下部をカット
+    H = 190.0
+    base.cut_cylinder(
+        target=body,
+        radius=BODY_radius + 1,
+        depth=6 + H,
+        location=(0.0, 0.0, -H / 2 - 35.0),
+    )
+
+    # 不要な外壁をカット
     depth = 54
     location = (0.0, 0.0, -8.0)
     body_inner = base.create_cylinder(
@@ -295,20 +342,14 @@ if BUILD_TOP:
     )
     base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-    H = 190.0
-    base.cut_cylinder(
-        target=body,
-        radius=BODY_radius + 1,
-        depth=6 + H,
-        location=(0.0, 0.0, -H / 2 - 35.0),
-    )
-
 
 # -------------------------------------------------------
 # BUILD_MIDDLE
 # -------------------------------------------------------
 
 if BUILD_MIDDLE:
+
+    # 不要な上部をカット
     H = 80.0
     base.cut_cylinder(
         target=body,
@@ -317,6 +358,7 @@ if BUILD_MIDDLE:
         location=(0.0, 0.0, -76.0 - H / 2),
     )
 
+    # 不要な下部をカット
     H = 170.0
     base.cut_cylinder(
         target=body,
@@ -331,10 +373,39 @@ if BUILD_MIDDLE:
 # -------------------------------------------------------
 
 if BUILD_BOTTOM:
-    H = 250.0
+
+    # 不要な上部をカット
+    H = 200.0
     base.cut_cylinder(
         target=body,
-        radius=124.0,
+        radius=BODY_radius + 1,
         depth=6 + H,
-        location=(0.0, 0.0, H / 2 - 70.0 ),
+        location=(0.0, 0.0, H / 2 - 19.0),
     )
+
+    # 不要な外壁をカット
+    depth = 54
+    location = (0.0, 0.0, -48.0)
+    body_inner = base.create_cylinder(
+        radius=BODY_radius,
+        depth=depth,
+        location=location,
+        vertices=64,
+    )
+    base.cut_cylinder(
+        target=body_inner,
+        radius=BODY_radius - 0.15 - WALL_hickness,
+        depth=depth,
+        location=location,
+        vertices=64,
+    )
+    base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
+
+    # アーム上部をカット
+    for i, (r) in enumerate([math.pi / 4, -math.pi / 4]):
+        base.cut_cube(
+            target=body,
+            scale=(12.1, DRONE_SIZE * 1.1, 45.0),
+            location=(0.0, 0.0, -54.0),
+            rotation=(0, 0, r),
+        )
