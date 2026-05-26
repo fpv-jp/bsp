@@ -314,7 +314,6 @@ body.rotation_euler = (math.pi, 0, math.pi / 4)
 # -------------------------------------------------------
 
 if BUILD_TOP:
-
     # 不要な下部をカット
     H = 190.0
     base.cut_cylinder(
@@ -348,7 +347,6 @@ if BUILD_TOP:
 # -------------------------------------------------------
 
 if BUILD_MIDDLE:
-
     # 不要な上部をカット
     H = 80.0
     base.cut_cylinder(
@@ -373,7 +371,6 @@ if BUILD_MIDDLE:
 # -------------------------------------------------------
 
 if BUILD_BOTTOM:
-
     # 不要な上部をカット
     H = 200.0
     base.cut_cylinder(
