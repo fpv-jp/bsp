@@ -231,7 +231,7 @@ def create_body(sharpen):
                 base.add_cube(
                     target=body,
                     scale=(6.7, 3.2, CENTER_BODY_height / 2),
-                    location=(x, 0.0, 38.8),
+                    location=(x, 0.0, 36.8),
                 )
             body.rotation_euler = (0, 0, 0)
     return body
@@ -301,6 +301,16 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
     y = DRONE_SIZE
     base.cut_cube(target=body, scale=(x, y, 6.1), location=(location))
     base.cut_cube(target=body, scale=(y, x, 6.1), location=(location))
+
+    # モータとESCのワイヤを通す穴
+    for i, (x, y) in enumerate([(math.pi / 2, 0), (0, math.pi / 2)]):
+        base.cut_cylinder(
+            target=body,
+            radius=2.75,
+            depth=BODY_radius * 2.1,
+            location=(0.0, 0.0, 29.0 + ARM_position),
+            rotation=(x, y, 0),
+        )
 
 # --- 確認のため前面カット ---
 # if TEST_CUT:
@@ -382,7 +392,7 @@ if BUILD_BOTTOM:
 
     # 不要な外壁をカット
     depth = 54
-    location = (0.0, 0.0, -48.0)
+    location = (0.0, 0.0, -46.0)
     body_inner = base.create_cylinder(
         radius=BODY_radius,
         depth=depth,
