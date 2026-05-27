@@ -112,7 +112,7 @@ def create_plate():
     for i, (x, y) in enumerate(FC_HOLES):
         base.add_ring(
             target=body,
-            outer_radius=M3 * 2,
+            outer_radius=M3 * 1.25,
             inner_radius=M3 / 2,
             depth=PLATE_THICKNESS,
             location=(x, y, 0.0),
