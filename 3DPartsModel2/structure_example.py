@@ -204,7 +204,7 @@ battery1 = base.create_cube(scale=(37, 37, 70))
 battery2 = base.copy(battery1)
 
 fc = base.create_cube(scale=(40, 40, 10), rotation=(0, 0, math.pi / 4))
-#esc = base.create_cube(scale=(56, 59, 10))
+# esc = base.create_cube(scale=(56, 59, 10))
 esc = base.create_cube(scale=(40, 40, 10))
 
 battery1.location = (0.0, 0.0, 128.0)
