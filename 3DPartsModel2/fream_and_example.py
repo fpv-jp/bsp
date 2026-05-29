@@ -203,14 +203,15 @@ bottom = base.copy(top, location=(0.0, 0.0, -3.0 - 1.5))
 battery1 = base.create_cube(scale=(37, 37, 70))
 battery2 = base.copy(battery1)
 
-fc = base.create_cube(scale=(42, 42, 10), rotation=(0, 0, math.pi / 4))
-esc = base.create_cube(scale=(56, 59, 10))
+fc = base.create_cube(scale=(40, 40, 10), rotation=(0, 0, math.pi / 4))
+#esc = base.create_cube(scale=(56, 59, 10))
+esc = base.create_cube(scale=(40, 40, 10))
 
-battery1.location = (0.0, 0.0, 120.0)
-battery2.location = (0.0, 0.0, 45.0)
+battery1.location = (0.0, 0.0, 128.0)
+battery2.location = (0.0, 0.0, 54.0)
 
-fc.location = (0.0, 0.0, -12.0)
-esc.location = (0.0, 0.0, -23.0)
+fc.location = (0.0, 0.0, 12.0)
+esc.location = (0.0, 0.0, -12.0)
 
 bpy.ops.object.select_all(action="SELECT")
 bpy.context.view_layer.objects.active = next(iter(bpy.context.scene.objects))

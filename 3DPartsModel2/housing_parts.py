@@ -43,7 +43,7 @@ BUILD_MIDDLE = True
 BUILD_MIDDLE = False
 
 BUILD_BOTTOM = True
-# BUILD_BOTTOM = False
+BUILD_BOTTOM = False
 
 
 # -------------------------------------------------------
@@ -55,6 +55,7 @@ def create_motor(sharpen):
     motor = base.create_cylinder(
         radius=MOTOR_radius * 0.9 - sharpen,
         depth=MOTOR_radius * 8,
+        location=(0.0, 0.0, sharpen),
         vertices=64,
     )
     # テーバをつける
@@ -172,6 +173,7 @@ def create_body(sharpen):
         body_top = base.create_tear_body(
             radius=BODY_radius - sharpen, depth=BODY_height, power=0.66, smooth=False
         )
+        body_top.location = (0.0, 0.0, sharpen)
 
     if BUILD_BOTTOM or BUILD_MIDDLE:
         # --- ボディ 下部 ---
@@ -187,35 +189,47 @@ def create_body(sharpen):
 
     # パーツに分けた時の止め合わせを追加
     if sharpen != 0:
+        W = 3.0
+        D = 5.5
+        H = 25.0
+
+        H2 = H * 2.0
+
+        X = 8.0
+        Y = 28.0
+
+        TOP = -6.0
+        BOTTOM = 60.0
+
         if BUILD_TOP:
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 # 取り付け部分
                 base.cut_cube(
                     target=body,
-                    scale=(28.0, 8.0, CENTER_BODY_height / 2.3),
-                    location=(0.0, y, 0.0),
+                    scale=(Y, X, H * 2),
+                    location=(0.0, y, TOP),
                 )
                 # ボディ 中央との凹
                 base.add_cube(
                     target=body,
-                    scale=(3.2, 5.7, CENTER_BODY_height / 2),
-                    location=(0.0, y, 17.3),
+                    scale=(W + 0.2, D + 0.2, H2),
+                    location=(0.0, y, TOP + H / 2),
                 )
         if BUILD_MIDDLE:
             # ボディ 上部との凸
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(3.0, 5.5, CENTER_BODY_height / 4),
-                    location=(0.0, y, 0.0),
+                    scale=(W, D, H),
+                    location=(0.0, y, TOP),
                 )
             # ボディ 下部との凸
             body.rotation_euler = (0, 0, math.pi / 4)
             for i, (x) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(5.5, 3.0, CENTER_BODY_height / 4),
-                    location=(x, 0.0, 54.0),
+                    scale=(D, W, H),
+                    location=(x, 0.0, BOTTOM),
                 )
             body.rotation_euler = (0, 0, 0)
         if BUILD_BOTTOM:
@@ -224,14 +238,14 @@ def create_body(sharpen):
                 # 取り付け部分
                 base.cut_cube(
                     target=body,
-                    scale=(8.0, 28.0, CENTER_BODY_height / 2.2),
-                    location=(x, 0.0, 56.0),
+                    scale=(X, Y, H * 2),
+                    location=(x, 0.0, BOTTOM),
                 )
                 # ボディ 中央との凹
                 base.add_cube(
                     target=body,
-                    scale=(5.7, 3.2, CENTER_BODY_height / 2),
-                    location=(x, 0.0, 36.8),
+                    scale=(D + 0.2, W + 0.2, H2),
+                    location=(x, 0.0, BOTTOM - H2 / 4),
                 )
             body.rotation_euler = (0, 0, 0)
     return body
@@ -279,7 +293,7 @@ if BUILD_TOP or BUILD_MIDDLE:
         target=body,
         radius=1.6,
         depth=BODY_radius * 2.1,
-        location=(0.0, 0.0, 24.5),
+        location=(0.0, 0.0, 13.0),
         rotation=(math.pi / 2, 0, 0),
     )
 
@@ -290,7 +304,7 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
         target=body,
         radius=1.6,
         depth=BODY_radius * 2.1,
-        location=(0.0, 0.0, 30.0),
+        location=(0.0, 0.0, 42.0),
         rotation=(0, math.pi / 2, 0),
     )
     body.rotation_euler = (0, 0, 0)
@@ -313,8 +327,7 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
         )
 
 # --- 確認のため前面カット ---
-# if TEST_CUT:
-#    base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+# base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
 
 # そのままだと3Dプリンタのサイズを超えるので調整
 body.rotation_euler = (math.pi, 0, math.pi / 4)
