@@ -220,7 +220,7 @@ def create_body(sharpen):
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(W, D, H),
+                    scale=(W, D, H - 2),
                     location=(0.0, y, TOP),
                 )
             # ボディ 下部との凸
@@ -228,7 +228,7 @@ def create_body(sharpen):
             for i, (x) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(D, W, H),
+                    scale=(D, W, H - 2),
                     location=(x, 0.0, BOTTOM),
                 )
             body.rotation_euler = (0, 0, 0)
