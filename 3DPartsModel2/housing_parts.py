@@ -40,7 +40,7 @@ BUILD_TOP = True
 BUILD_TOP = False
 
 BUILD_MIDDLE = True
-BUILD_MIDDLE = False
+# BUILD_MIDDLE = False
 
 BUILD_BOTTOM = True
 BUILD_BOTTOM = False
@@ -58,6 +58,24 @@ def create_motor(sharpen):
         location=(0.0, 0.0, sharpen),
         vertices=64,
     )
+
+    # モータ の取り付け穴 ----------------------------
+    MOTOR_PITCH = 19.0 / 2  # モータの取り付け穴ピッチ
+    MOTOR_HOLES = [
+        (MOTOR_PITCH, 0),
+        (-MOTOR_PITCH, 0),
+        (0, MOTOR_PITCH),
+        (0, -MOTOR_PITCH),
+    ]
+    for i, (x, y) in enumerate(MOTOR_HOLES):
+        base.cut_cylinder(
+            target=motor,
+            radius=4.0,
+            depth=53.0,
+            location=(x, y, 0.0),
+        )
+    motor.rotation_euler[2] = math.pi / 4
+
     # テーバをつける
     base.taper(motor, segments=64, curve="tear", power=0.75)
     return motor
@@ -107,7 +125,7 @@ def create_arm(sharpen):
         width=ARM_width - sharpen2,
         height=ARM_width * 3 - sharpen2,
         power=0.75,
-        location=(0.0, DRONE_SIZE / 4, 0.0),
+        location=(0.0, DRONE_SIZE / 4, 5.5),
     )
 
     # --- アーム 中央 上部 と 下部 を 結合 ---
@@ -121,10 +139,11 @@ def create_arm(sharpen):
 # -------------------------------------------------------
 def create_motor_arm():
 
-    # --- アーム(中をくり抜く) ---
+    # --- アーム
     arm = create_arm(0)
-    arm_inner = create_arm(WALL_hickness)
-    base.modifier_apply(obj=arm_inner, target=arm, operation="DIFFERENCE")
+    # --- アーム(中をくり抜く) ---
+    # arm_inner = create_arm(WALL_hickness)
+    # base.modifier_apply(obj=arm_inner, target=arm, operation="DIFFERENCE")
 
     location = (0, MOTOR_PITCH, 16.0)  # アーム に対して モータ を取り付ける位置
 
@@ -133,13 +152,20 @@ def create_motor_arm():
         motor = create_motor(0)
         motor.location = location
 
+        base.cut_cylinder(
+            target=arm,
+            radius=MOTOR_radius - 5,
+            depth=100.0,
+            location=(0.0, MOTOR_PITCH, 0.0),
+        )
+
         # --- アーム と モータ を結合 ---
         base.modifier_apply(obj=motor, target=arm, operation="UNION")
 
         # --- モータの 中をくり抜く ---
-        motor_inner = create_motor(WALL_hickness)
-        motor_inner.location = location
-        base.modifier_apply(obj=motor_inner, target=arm, operation="DIFFERENCE")
+        # motor_inner = create_motor(WALL_hickness)
+        # motor_inner.location = location
+        # base.modifier_apply(obj=motor_inner, target=arm, operation="DIFFERENCE")
 
     # --- モータ の下部をカット ---
     base.cut_cylinder(
@@ -164,7 +190,7 @@ def create_body(sharpen):
     body = base.create_cylinder(
         radius=BODY_radius - 0.1 - sharpen,
         depth=CENTER_BODY_height,
-        location=(0.0, 0.0, (11.0) if sharpen > 0 else (11.05)),
+        location=(0.0, 0.0, (11.0) if sharpen > 0 else (11.1)),
         vertices=64,
     )
 
@@ -191,36 +217,37 @@ def create_body(sharpen):
     if sharpen != 0:
         W = 3.0
         D = 5.5
-        H = 25.0
+        H = 15.0
 
         H2 = H * 2.0
 
         X = 8.0
         Y = 28.0
 
-        TOP = -6.0
-        BOTTOM = 60.0
+        TOP = -11.0
+        BOTTOM = 65.0
 
         if BUILD_TOP:
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
-                # 取り付け部分
+                # ボディ 中央との取り付け部分
                 base.cut_cube(
                     target=body,
                     scale=(Y, X, H * 2),
                     location=(0.0, y, TOP),
                 )
-                # ボディ 中央との凹
+                # 取り付け部分の凹
                 base.add_cube(
                     target=body,
                     scale=(W + 0.2, D + 0.2, H2),
                     location=(0.0, y, TOP + H / 2),
                 )
+
         if BUILD_MIDDLE:
             # ボディ 上部との凸
             for i, (y) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(W, D, H - 2),
+                    scale=(W, D, H - 3),
                     location=(0.0, y, TOP),
                 )
             # ボディ 下部との凸
@@ -228,20 +255,21 @@ def create_body(sharpen):
             for i, (x) in enumerate([BODY_radius, -BODY_radius]):
                 base.cut_cube(
                     target=body,
-                    scale=(D, W, H - 2),
+                    scale=(D, W, H - 3),
                     location=(x, 0.0, BOTTOM),
                 )
             body.rotation_euler = (0, 0, 0)
+
         if BUILD_BOTTOM:
             body.rotation_euler = (0, 0, math.pi / 4)
             for i, (x) in enumerate([BODY_radius, -BODY_radius]):
-                # 取り付け部分
+                # ボディ 中央との取り付け部分
                 base.cut_cube(
                     target=body,
                     scale=(X, Y, H * 2),
                     location=(x, 0.0, BOTTOM),
                 )
-                # ボディ 中央との凹
+                # 取り付け部分の凹
                 base.add_cube(
                     target=body,
                     scale=(D + 0.2, W + 0.2, H2),
@@ -287,26 +315,29 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
 body_inner = create_body(WALL_hickness)
 base.modifier_apply(obj=body_inner, target=body, operation="DIFFERENCE")
 
-# --- ボディ 中央と上部の共通ネジ穴
+
 if BUILD_TOP or BUILD_MIDDLE:
+    # --- ボディ 中央と上部の共通ネジ穴
     base.cut_cylinder(
         target=body,
         radius=1.6,
         depth=BODY_radius * 2.1,
-        location=(0.0, 0.0, 13.0),
+        location=(0.0, 0.0, -3.0),
         rotation=(math.pi / 2, 0, 0),
     )
 
-# --- ボディ 中央と下部の共通ネジ穴
+
 if BUILD_BOTTOM or BUILD_MIDDLE:
+    # --- ボディ 中央と下部の共通ネジ穴
     body.rotation_euler = (0, 0, math.pi / 4)
     base.cut_cylinder(
         target=body,
         radius=1.6,
         depth=BODY_radius * 2.1,
-        location=(0.0, 0.0, 42.0),
+        location=(0.0, 0.0, 57.0),
         rotation=(0, math.pi / 2, 0),
     )
+
     body.rotation_euler = (0, 0, 0)
 
     # アームのボディが重なる部分をカット
@@ -320,14 +351,14 @@ if BUILD_BOTTOM or BUILD_MIDDLE:
     for i, (x, y) in enumerate([(math.pi / 2, 0), (0, math.pi / 2)]):
         base.cut_cylinder(
             target=body,
-            radius=2.75,
-            depth=BODY_radius * 2.1,
-            location=(0.0, 0.0, 29.0 + ARM_position),
+            radius=4.0,
+            depth=DRONE_SIZE,
+            location=(0.0, 0.0, 29.5 + ARM_position),
             rotation=(x, y, 0),
         )
 
 # --- 確認のため前面カット ---
-# base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
+#base.bisect(body, plane_co=(0, 0, 0), plane_no=(0, 1, 0), clear_outer=True)
 
 # そのままだと3Dプリンタのサイズを超えるので調整
 body.rotation_euler = (math.pi, 0, math.pi / 4)
