@@ -135,12 +135,13 @@ def create_arm_motor() -> cq.Workplane:
         .extrude(ARM_THICKNESS)
     )
 
-    # 4 motor boss rings
+    # 4 motor boss rings — holes at 45° (× pattern), 19 mm pitch
+    D = MOTOR_PITCH / math.sqrt(2)   # 9.5 / √2 ≈ 6.718 mm
     motor_hole_pos = [
-        ( MOTOR_PITCH,  0),
-        (-MOTOR_PITCH,  0),
-        ( 0,  MOTOR_PITCH),
-        ( 0, -MOTOR_PITCH),
+        ( D,  D),
+        (-D,  D),
+        (-D, -D),
+        ( D, -D),
     ]
     R_BOSS = M3 * 1.5   # 4.8 mm boss radius
     for x, y in motor_hole_pos:
@@ -153,22 +154,27 @@ def create_arm_motor() -> cq.Workplane:
             .circle(M3 / 2).extrude(ARM_THICKNESS)
         )
 
-    # M5 shaft hole at arm tip
+    # M5 hole at arm tip (body/center-plate attachment end)
     arm = arm.cut(
         cq.Workplane("XY").transformed(offset=(0, ARM_length, 0))
         .circle(M5 / 2).extrude(ARM_THICKNESS)
     )
 
-    # M3 body-plate attachment hole
-    arm = arm.cut(
-        cq.Workplane("XY").transformed(offset=(FC_PITCH, -FC_PITCH, 0))
-        .circle(M3 / 2).extrude(ARM_THICKNESS)
-    )
-
-    # Corner relief cuts are applied at the arm TIP (body-attach side) in Blender,
-    # AFTER rotating the arm 45° and moving the origin to the tip.
-    # For CNC plate (no rotation): the equivalent cuts are near Y=ARM_length.
-    # Skip here – the user can add clearance if needed for their specific frame.
+    # 45° corner cuts at body-attachment end (y = ARM_length)
+    # Prevents arm-to-arm overlap at center when 4 arms are assembled
+    CUT = ARM_width / 2   # 6 mm
+    for sx in [1, -1]:
+        tip_cut = (
+            cq.Workplane("XY")
+            .polyline([
+                (sx * ARM_width/2,              ARM_length - CUT),
+                (sx * ARM_width/2,              ARM_length),
+                (sx * ARM_width/2 - sx * CUT,   ARM_length),
+            ])
+            .close()
+            .extrude(ARM_THICKNESS)
+        )
+        arm = arm.cut(tip_cut)
 
     return arm
 

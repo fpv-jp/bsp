@@ -16,7 +16,7 @@ https://winder.github.io/ugs_website/
 
 
 使用方法
-これらをモデルやCADを作成するために、blenderとFreecadを使用しています
+これらをモデルやCADを作成するために、blenderとを使用しています
 
 制作に使った工作機と
 
